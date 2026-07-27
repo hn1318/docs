@@ -1,4 +1,4 @@
-import { getPageImageUrl, getPageMarkdownUrl, getSource } from '@/lib/source';
+import { getPageImageUrl, getPageMarkdownUrl, sourceZh } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -12,22 +12,10 @@ import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { gitConfig } from '@/lib/shared';
-import { headers } from 'next/headers';
-import type { Locale } from '@/i18n/config';
-import { locales } from '@/i18n/config';
 
-async function getLocale(): Promise<Locale> {
-  const headersList = await headers();
-  const pathname =
-    headersList.get('x-pathname') ?? headersList.get('x-invoke-pathname') ?? '/docs';
-  return (locales.find((l) => l !== 'en' && pathname.startsWith(`/${l}`)) ?? 'en') as Locale;
-}
-
-export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
+export default async function Page(props: PageProps<'/zh/docs/[[...slug]]'>) {
   const params = await props.params;
-  const locale = await getLocale();
-  const source = getSource(locale);
-  const page = source.getPage(params.slug);
+  const page = sourceZh.getPage(params.slug);
   if (!page) notFound();
 
   const MDX = page.data.body;
@@ -41,13 +29,13 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
         <MarkdownCopyButton markdownUrl={markdownUrl} />
         <ViewOptionsPopover
           markdownUrl={markdownUrl}
-          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/${locale}/${page.path}`}
+          githubUrl={`https://github.com/${gitConfig.user}/${gitConfig.repo}/blob/${gitConfig.branch}/content/docs/zh/${page.path}`}
         />
       </div>
       <DocsBody>
         <MDX
           components={getMDXComponents({
-            a: createRelativeLink(source, page),
+            a: createRelativeLink(sourceZh, page),
           })}
         />
       </DocsBody>
@@ -56,15 +44,12 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 }
 
 export async function generateStaticParams() {
-  const { sourceEn, sourceZh } = await import('@/lib/source');
-  return [...sourceEn.generateParams(), ...sourceZh.generateParams()];
+  return sourceZh.generateParams();
 }
 
-export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): Promise<Metadata> {
+export async function generateMetadata(props: PageProps<'/zh/docs/[[...slug]]'>): Promise<Metadata> {
   const params = await props.params;
-  const locale = await getLocale();
-  const source = getSource(locale);
-  const page = source.getPage(params.slug);
+  const page = sourceZh.getPage(params.slug);
   if (!page) notFound();
 
   return {

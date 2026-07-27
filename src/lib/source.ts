@@ -1,16 +1,26 @@
-import { docs } from 'collections/server';
+import { docsEn, docsZh } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { docsContentRoute, docsImageRoute, docsRoute } from './shared';
+import type { Locale } from '@/i18n/config';
 
-// See https://fumadocs.dev/docs/headless/source-api for more info
-export const source = loader({
+export const sourceEn = loader({
   baseUrl: docsRoute,
-  source: docs.toFumadocsSource(),
+  source: docsEn.toFumadocsSource(),
   plugins: [lucideIconsPlugin()],
 });
 
-export function getPageImageUrl(page: (typeof source)['$inferPage']) {
+export const sourceZh = loader({
+  baseUrl: '/zh/docs',
+  source: docsZh.toFumadocsSource(),
+  plugins: [lucideIconsPlugin()],
+});
+
+export function getSource(locale: Locale) {
+  return locale === 'zh' ? sourceZh : sourceEn;
+}
+
+export function getPageImageUrl(page: { locale?: string; slugs: string[] }) {
   const segments = [...page.slugs, 'image.png'];
 
   return {
@@ -19,16 +29,20 @@ export function getPageImageUrl(page: (typeof source)['$inferPage']) {
   };
 }
 
-export function getPageMarkdownUrl(page: (typeof source)['$inferPage']) {
+export function getPageMarkdownUrl(page: { locale?: string; slugs: string[] }) {
   const segments = [...page.slugs, 'content.md'];
 
   return {
     segments,
-    url: '/' + [page.locale, ...docsContentRoute.split('/'), ...segments].filter(Boolean).join('/'),
+    url:
+      '/' + [page.locale, ...docsContentRoute.split('/'), ...segments].filter(Boolean).join('/'),
   };
 }
 
-export async function getLLMText(page: (typeof source)['$inferPage']) {
+export async function getLLMText(page: {
+  data: { title: string; getText: (type: 'processed' | 'raw') => Promise<string> };
+  url: string;
+}) {
   const processed = await page.data.getText('processed');
 
   return `# ${page.data.title} (${page.url})

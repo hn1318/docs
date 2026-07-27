@@ -1,4 +1,4 @@
-import { getPageImageUrl, source } from '@/lib/source';
+import { getPageImageUrl, sourceEn, sourceZh } from '@/lib/source';
 import { notFound } from 'next/navigation';
 import { ImageResponse } from 'next/og';
 import { generate as DefaultImage } from 'fumadocs-ui/og';
@@ -8,7 +8,10 @@ export const revalidate = false;
 
 export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...slug]'>) {
   const { slug } = await params;
-  const page = source.getPage(slug.slice(0, -1));
+  const slugs = slug.slice(0, -1);
+
+  // Try English first, then Chinese
+  const page = sourceEn.getPage(slugs) ?? sourceZh.getPage(slugs);
   if (!page) notFound();
 
   return new ImageResponse(
@@ -21,8 +24,13 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...
 }
 
 export function generateStaticParams() {
-  return source.getPages().map((page) => ({
+  const enPages = sourceEn.getPages().map((page) => ({
     lang: page.locale,
     slug: getPageImageUrl(page).segments,
   }));
+  const zhPages = sourceZh.getPages().map((page) => ({
+    lang: page.locale,
+    slug: getPageImageUrl(page).segments,
+  }));
+  return [...enPages, ...zhPages];
 }

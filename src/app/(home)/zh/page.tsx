@@ -18,8 +18,8 @@ const features = [
   { key: 'customizable' as const, icon: Settings, gradient: 'from-purple-500 to-pink-500' },
 ];
 
-export default function HomePage() {
-  const dict = getDictionary('en');
+export default function HomePageZh() {
+  const dict = getDictionary('zh');
 
   return (
     <main className="flex flex-col flex-1">
@@ -49,7 +49,7 @@ export default function HomePage() {
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
-              href="/docs"
+              href="/zh/docs"
               className="inline-flex items-center gap-2 rounded-full bg-fd-foreground px-8 py-3 text-sm font-medium text-fd-background transition-all hover:opacity-90 hover:shadow-lg"
             >
               {dict.home.getStarted}
@@ -105,7 +105,7 @@ export default function HomePage() {
             {dict.cta.description}
           </p>
           <Link
-            href="/docs"
+            href="/zh/docs"
             className="inline-flex items-center gap-2 rounded-full bg-fd-foreground px-8 py-3 text-sm font-medium text-fd-background transition-all hover:opacity-90"
           >
             {dict.cta.button}
@@ -119,16 +119,16 @@ export default function HomePage() {
         <div className="mx-auto flex max-w-screen-lg flex-col items-center justify-between gap-4 px-6 py-6 text-sm text-fd-muted-foreground sm:flex-row">
           <p>&copy; {new Date().getFullYear()} WebQ. {dict.footer.rights}</p>
           <div className="flex gap-6">
-            <Link href="/docs/privacy" className="inline-flex items-center gap-1.5 transition-colors hover:text-fd-foreground">
+            <Link href="/zh/docs/privacy" className="inline-flex items-center gap-1.5 transition-colors hover:text-fd-foreground">
               <ShieldCheck className="size-3.5" />
               {dict.nav.privacy}
             </Link>
-            <Link href="/docs/terms" className="inline-flex items-center gap-1.5 transition-colors hover:text-fd-foreground">
+            <Link href="/zh/docs/terms" className="inline-flex items-center gap-1.5 transition-colors hover:text-fd-foreground">
               <Scale className="size-3.5" />
               {dict.nav.terms}
             </Link>
-            <Link href="/zh" className="transition-colors hover:text-fd-foreground">
-              中文
+            <Link href="/" className="transition-colors hover:text-fd-foreground">
+              English
             </Link>
           </div>
         </div>

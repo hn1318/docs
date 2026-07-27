@@ -8,7 +8,7 @@ import {
   toUIMessageStream,
 } from 'ai';
 import { z } from 'zod';
-import { source } from '@/lib/source';
+import { sourceEn, sourceZh } from '@/lib/source';
 import { Document, type DocumentData } from 'flexsearch';
 import { ChatUIMessage, SearchTool } from '../../../components/ai/search';
 
@@ -29,8 +29,10 @@ async function createSearchServer() {
     },
   });
 
+  const allPages = [...sourceEn.getPages(), ...sourceZh.getPages()];
+
   const docs = await chunkedAll(
-    source.getPages().map(async (page) => {
+    allPages.map(async (page) => {
       if (!('getText' in page.data)) return null;
 
       return {
