@@ -14,6 +14,11 @@ export function baseOptions(locale: Locale = 'en'): BaseLayoutProps {
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
     links: [
       {
+        text: dict.nav.projects,
+        url: `${localePrefix}/#projects`,
+        active: 'none',
+      },
+      {
         text: dict.nav.docs,
         url: `${localePrefix}/docs`,
         active: 'nested-url',

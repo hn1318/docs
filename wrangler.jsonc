@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Worker name on Cloudflare (also becomes the default *.workers.dev subdomain)
+  "name": "makerstudio",
+  // OpenNext for Cloudflare build output
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": "./.open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Optional: custom domain
+  // "routes": [{ "pattern": "makerstudio.example.com", "custom_domain": true }]
+}

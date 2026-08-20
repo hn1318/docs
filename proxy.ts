@@ -11,6 +11,16 @@ const { rewrite: rewriteSuffix } = rewritePath(
   `${docsContentRoute}{/*path}/content.md`,
 );
 
+/**
+ * Continue the request while propagating the current pathname,
+ * so server layouts can detect the active locale.
+ */
+function nextWithPathname(request: NextRequest) {
+  const headers = new Headers(request.headers);
+  headers.set('x-pathname', request.nextUrl.pathname);
+  return NextResponse.next({ request: { headers } });
+}
+
 export default function proxy(request: NextRequest) {
   const result = rewriteSuffix(request.nextUrl.pathname);
   if (result) {
@@ -28,5 +38,5 @@ export default function proxy(request: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return nextWithPathname(request);
 }
