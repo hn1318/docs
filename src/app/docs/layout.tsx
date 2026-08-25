@@ -1,40 +1,12 @@
 import { getSource } from '@/lib/source';
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { baseOptions } from '@/lib/layout.shared';
-import { AISearch, AISearchPanel, AISearchTrigger } from '@/components/ai/search';
-import { MessageCircleIcon } from 'lucide-react';
-import { cn } from '@/lib/cn';
-import { buttonVariants } from 'fumadocs-ui/components/ui/button';
-import { headers } from 'next/headers';
-import type { Locale } from '@/i18n/config';
-import { locales } from '@/i18n/config';
 
-export default async function Layout({ children }: LayoutProps<'/docs'>) {
-  const headersList = await headers();
-  const pathname =
-    headersList.get('x-pathname') ?? headersList.get('x-invoke-pathname') ?? '/docs';
-
-  const locale = (locales.find((l) => l !== 'en' && pathname.startsWith(`/${l}`)) ?? 'en') as Locale;
-  const source = getSource(locale);
+export default function Layout({ children }: LayoutProps<'/docs'>) {
+  const source = getSource('en');
 
   return (
-    <DocsLayout tree={source.getPageTree()} {...baseOptions(locale)}>
-      <AISearch>
-        <AISearchPanel />
-        <AISearchTrigger
-          position="float"
-          className={cn(
-            buttonVariants({
-              variant: 'secondary',
-              className: 'text-fd-muted-foreground rounded-2xl',
-            }),
-          )}
-        >
-          <MessageCircleIcon className="size-4.5" />
-          Ask AI
-        </AISearchTrigger>
-      </AISearch>
-
+    <DocsLayout tree={source.getPageTree()} {...baseOptions('en')}>
       {children}
     </DocsLayout>
   );

@@ -1,4 +1,4 @@
-import { getPageImageUrl, getPageMarkdownUrl, getSource } from '@/lib/source';
+import { getPageMarkdownUrl, getSource } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -12,20 +12,10 @@ import { getMDXComponents } from '@/components/mdx';
 import type { Metadata } from 'next';
 import { createRelativeLink } from 'fumadocs-ui/mdx';
 import { gitConfig } from '@/lib/shared';
-import { headers } from 'next/headers';
-import type { Locale } from '@/i18n/config';
-import { locales } from '@/i18n/config';
-
-async function getLocale(): Promise<Locale> {
-  const headersList = await headers();
-  const pathname =
-    headersList.get('x-pathname') ?? headersList.get('x-invoke-pathname') ?? '/docs';
-  return (locales.find((l) => l !== 'en' && pathname.startsWith(`/${l}`)) ?? 'en') as Locale;
-}
 
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
-  const locale = await getLocale();
+  const locale = 'en' as const;
   const source = getSource(locale);
   const page = source.getPage(params.slug);
   if (!page) notFound();
@@ -62,16 +52,12 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(props: PageProps<'/docs/[[...slug]]'>): Promise<Metadata> {
   const params = await props.params;
-  const locale = await getLocale();
-  const source = getSource(locale);
+  const source = getSource('en');
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
   return {
     title: page.data.title,
     description: page.data.description,
-    openGraph: {
-      images: getPageImageUrl(page).url,
-    },
   };
 }

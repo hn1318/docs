@@ -1,7 +1,7 @@
 import { docsEn, docsZh } from 'collections/server';
 import { loader } from 'fumadocs-core/source';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
-import { docsContentRoute, docsImageRoute, docsRoute } from './shared';
+import { docsContentRoute, docsRoute } from './shared';
 import type { Locale } from '@/i18n/config';
 
 export const sourceEn = loader({
@@ -18,15 +18,6 @@ export const sourceZh = loader({
 
 export function getSource(locale: Locale) {
   return locale === 'zh' ? sourceZh : sourceEn;
-}
-
-export function getPageImageUrl(page: { locale?: string; slugs: string[] }) {
-  const segments = [...page.slugs, 'image.png'];
-
-  return {
-    segments,
-    url: '/' + [page.locale, ...docsImageRoute.split('/'), ...segments].filter(Boolean).join('/'),
-  };
 }
 
 export function getPageMarkdownUrl(page: { locale?: string; slugs: string[] }) {

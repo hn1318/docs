@@ -10,6 +10,8 @@
 /out/
 /build
 *.tsbuildinfo
+.next-export
+*.log
 
 # cloudflare / opennext
 .open-next

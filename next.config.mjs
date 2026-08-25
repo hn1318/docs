@@ -5,6 +5,15 @@ const withMDX = createMDX();
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  // Use a fresh build dir so Next never needs to delete the stale .next
+  // (the sandbox has no recycle bin, which breaks Next's safe-delete cleanup).
+  distDir: '.next-export',
+  // Emit a folder of static HTML files (out/) instead of a server runtime.
+  output: 'export',
+  // next/image optimization needs a server; disable it for static hosting.
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default withMDX(config);

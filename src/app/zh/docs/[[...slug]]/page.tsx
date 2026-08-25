@@ -1,4 +1,4 @@
-import { getPageImageUrl, getPageMarkdownUrl, sourceZh } from '@/lib/source';
+import { getPageMarkdownUrl, sourceZh } from '@/lib/source';
 import {
   DocsBody,
   DocsDescription,
@@ -55,8 +55,5 @@ export async function generateMetadata(props: PageProps<'/zh/docs/[[...slug]]'>)
   return {
     title: page.data.title,
     description: page.data.description,
-    openGraph: {
-      images: getPageImageUrl(page).url,
-    },
   };
 }
