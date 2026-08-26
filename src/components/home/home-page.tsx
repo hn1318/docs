@@ -29,35 +29,36 @@ type ProjectKey = keyof ReturnType<typeof getDictionary>['projects']['items'];
 const projects: Array<{
   key: ProjectKey;
   icon: LucideIcon;
-  repo: string;
+  /** Target page when the user clicks the project (homepage or repo). */
+  href: string;
   accent: string;
   glow: string;
 }> = [
   {
     key: 'hwather',
     icon: CloudSun,
-    repo: 'hwather',
+    href: 'https://weather.hn3.top',
     accent: 'from-sky-500 to-blue-600',
     glow: 'bg-sky-500/20',
   },
   {
     key: 'hchat',
     icon: MessagesSquare,
-    repo: 'hchat',
+    href: 'https://chat.hn3.top',
     accent: 'from-emerald-500 to-teal-600',
     glow: 'bg-emerald-500/20',
   },
   {
     key: 'nettool',
     icon: Network,
-    repo: 'nettool',
+    href: 'https://github.com/hn1318/netTool',
     accent: 'from-violet-500 to-indigo-600',
     glow: 'bg-violet-500/20',
   },
   {
     key: 'campustao',
     icon: BookOpen,
-    repo: 'campustao',
+    href: 'https://book.hn3.top',
     accent: 'from-amber-500 to-orange-600',
     glow: 'bg-amber-500/20',
   },
@@ -188,7 +189,6 @@ export function HomePage({ locale }: { locale: Locale }) {
             {projects.map((project, i) => {
               const item = dict.projects.items[project.key];
               const Icon = project.icon;
-              const repoUrl = `https://github.com/${gitConfig.user}/${project.repo}`;
               return (
                 <Reveal key={project.key} delay={(i % 2) * 100}>
                   <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-fd-border bg-fd-card p-6 transition-all duration-300 hover:-translate-y-1.5 hover:border-transparent hover:shadow-xl sm:p-8">
@@ -208,7 +208,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                         <Icon className="size-6" />
                       </div>
                       <a
-                        href={repoUrl}
+                        href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label={item.name}
@@ -242,7 +242,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                         ))}
                       </div>
                       <a
-                        href={repoUrl}
+                        href={project.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group/link inline-flex items-center gap-1 text-sm font-medium text-fd-foreground transition-colors hover:text-fd-primary active:scale-95"
@@ -404,7 +404,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 {projects.map((project) => (
                   <li key={project.key}>
                     <a
-                      href={`https://github.com/${gitConfig.user}/${project.repo}`}
+                      href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
