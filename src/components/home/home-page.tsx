@@ -149,7 +149,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
               <a
-                href={`https://github.com/${gitConfig.user}`}
+                href={`https://github.com/${gitConfig.user}/${gitConfig.repo}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-fd-border bg-fd-card px-8 py-3 text-sm font-medium text-fd-foreground transition-all duration-200 hover:bg-fd-accent active:scale-95"
@@ -372,7 +372,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <ArrowRight className="size-4 transition-transform duration-200 group-hover:translate-x-0.5" />
               </Link>
               <a
-                href={`https://github.com/${gitConfig.user}`}
+                href={`https://github.com/${gitConfig.user}/${gitConfig.repo}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border border-fd-border bg-fd-card px-8 py-3 text-sm font-medium text-fd-foreground transition-all duration-200 hover:bg-fd-accent active:scale-95"

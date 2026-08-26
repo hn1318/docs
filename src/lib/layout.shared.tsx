@@ -10,6 +10,8 @@ export function baseOptions(locale: Locale = 'en'): BaseLayoutProps {
   return {
     nav: {
       title: appName,
+      // Keep the language when clicking the brand title (zh pages stay on /zh).
+      url: localePrefix || '/',
     },
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
     links: [
