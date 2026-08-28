@@ -1,5 +1,7 @@
 import { createSearchAPI } from 'fumadocs-core/search/server';
-import { sourceEn, sourceZh } from '@/lib/source';
+import type { StructuredData } from 'fumadocs-core/mdx-plugins/remark-structure';
+import { allSources } from '@/lib/source';
+import { projectTag } from '@/lib/projects';
 
 /**
  * Static search endpoint.
@@ -8,20 +10,22 @@ import { sourceEn, sourceZh } from '@/lib/source';
  * as a static JSON file. The client (`type: 'static'` in RootProvider) fetches
  * it once and performs the search entirely in the browser — no server needed.
  *
- * Both locales share a single multilingual index (Unicode word segmentation),
- * so Chinese and English are both searchable with zero extra config.
+ * All products' docs are merged into a single multilingual index. Each page
+ * is tagged with its product (`frontmatter.product`, falling back to the URL
+ * prefix) so the product dropdown in the search dialog can filter results.
  */
 export const dynamic = 'force-static';
 
 async function buildIndexes() {
-  const pages = [...sourceEn.getPages(), ...sourceZh.getPages()];
+  const pages = allSources.flatMap((source) => source.getPages());
 
   return pages.map((page) => ({
-    title: page.data.title,
-    description: page.data.description,
+    title: page.data.title ?? '',
+    description: page.data.description ?? '',
     url: page.url,
     id: page.url,
-    structuredData: page.data.structuredData,
+    structuredData: page.data.structuredData as StructuredData,
+    tag: (page.data as { product?: string }).product ?? projectTag(page.url),
   }));
 }
 

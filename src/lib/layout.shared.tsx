@@ -3,7 +3,10 @@ import { appName, gitConfig } from './shared';
 import { getDictionary } from '@/i18n/dict';
 import type { Locale } from '@/i18n/config';
 
-export function baseOptions(locale: Locale = 'en'): BaseLayoutProps {
+export function baseOptions(
+  locale: Locale = 'en',
+  options?: { hideProjects?: boolean },
+): BaseLayoutProps {
   const dict = getDictionary(locale);
   const localePrefix = locale === 'en' ? '' : `/${locale}`;
 
@@ -14,17 +17,27 @@ export function baseOptions(locale: Locale = 'en'): BaseLayoutProps {
       url: localePrefix || '/',
     },
     githubUrl: `https://github.com/${gitConfig.user}/${gitConfig.repo}`,
-    links: [
-      {
-        text: dict.nav.projects,
-        url: `${localePrefix}/#projects`,
-        active: 'none',
-      },
-      {
-        text: dict.nav.docs,
-        url: `${localePrefix}/docs`,
-        active: 'nested-url',
-      },
-    ],
+    // Docs layouts hide the "Projects" entry (it only makes sense on the home
+    // page); the home layout keeps it.
+    links: options?.hideProjects
+      ? [
+          {
+            text: dict.nav.docs,
+            url: `${localePrefix}/docs`,
+            active: 'nested-url',
+          },
+        ]
+      : [
+          {
+            text: dict.nav.projects,
+            url: `${localePrefix}/#projects`,
+            active: 'none',
+          },
+          {
+            text: dict.nav.docs,
+            url: `${localePrefix}/docs`,
+            active: 'nested-url',
+          },
+        ],
   };
 }
