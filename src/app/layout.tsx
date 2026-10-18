@@ -2,6 +2,7 @@ import { RootProvider } from 'fumadocs-ui/provider/next';
 import './global.css';
 import '@fontsource-variable/inter';
 import { LocaleLang } from '@/components/locale-lang';
+import { NavProgress } from '@/components/nav-progress';
 import { SearchDialogWithProducts } from '@/components/search-dialog';
 
 export default function Layout({ children }: LayoutProps<'/'>) {
@@ -17,6 +18,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
         <script defer src="https://umami.hn3.top/recorder.js" data-website-id="ed0ddb51-b293-4d8f-9a66-a297c16b5802" />
       </head>
       <body className="flex flex-col min-h-screen">
+        <NavProgress />
         <LocaleLang />
         <RootProvider
           search={{
@@ -32,6 +34,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
               tags: [
                 { name: 'All', value: 'all' },
                 { name: 'HWeather', value: 'hweather' },
+                { name: 'AutoClicker', value: 'autoclicker' },
                 { name: 'HChat', value: 'hchat' },
                 { name: 'NetTool', value: 'nettool' },
                 { name: 'CampusTao', value: 'campustao' },

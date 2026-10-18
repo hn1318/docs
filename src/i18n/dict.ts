@@ -13,7 +13,7 @@ const en = {
     badge: 'Independent Maker Workshop',
     tagline: 'Ideas, crafted into products.',
     description:
-      'MakerStudio is an indie maker workshop. We turn everyday problems into fast, polished and privacy-friendly web products — weather alerts, chat rooms, tunnels and campus marketplaces — all shipped from an open, modern stack.',
+      'MakerStudio is an indie maker workshop. We turn everyday problems into fast, polished and privacy-friendly products — weather alerts, a Windows auto clicker, tunnels and campus marketplaces — all shipped from an open, modern stack.',
     primaryCta: 'Explore Projects',
     secondaryCta: 'View on GitHub',
     scrollHint: 'Scroll to explore',
@@ -43,16 +43,16 @@ const en = {
         ],
         tags: ['Weather', 'Alerts', 'PWA'],
       },
-      hchat: {
-        name: 'Hchat',
-        tagline: 'Online multi-user chat rooms',
+      autoclicker: {
+        name: 'AutoClicker',
+        tagline: 'Lightweight, disciplined Windows auto clicker',
         features: [
-          'Real-time message sync across many users',
-          'Perfect for ad-hoc discussions & interest groups',
-          'Zero-friction entry — join and start chatting',
-          'Extensible room management & identity system',
+          'Rust handles timing & input injection — no drift even at 1 ms',
+          'Multi-point sequences, jitter, ramps and click-count limits',
+          'Global hotkeys, foreground-window binding, runtime cap',
+          'Native Tauri app: light/dark themes, bilingual UI, config import/export',
         ],
-        tags: ['Realtime', 'Chat', 'WebSocket'],
+        tags: ['Desktop', 'Tauri', 'Rust'],
       },
       nettool: {
         name: 'NetTool',
@@ -175,7 +175,7 @@ const zh: typeof en = {
     badge: '独立开发者工作坊',
     tagline: '把想法，打磨成产品。',
     description:
-      'MakerStudio 是一个独立开发者工作坊。我们把日常生活中的真实问题，做成快速、精致、尊重隐私的网络产品——天气预警、多人聊天、内网穿透与校园二手书市场——全部构建于开放、现代的技术栈之上。',
+      'MakerStudio 是一个独立开发者工作坊。我们把日常生活中的真实问题，做成快速、精致、尊重隐私的产品——天气预警、Windows 自动连点器、内网穿透与校园二手书市场——全部构建于开放、现代的技术栈之上。',
     primaryCta: '探索项目',
     secondaryCta: '查看 GitHub',
     scrollHint: '向下滚动浏览',
@@ -204,16 +204,16 @@ const zh: typeof en = {
         ],
         tags: ['天气', '预警', 'PWA'],
       },
-      hchat: {
-        name: 'Hchat',
-        tagline: '在线多人聊天室',
+      autoclicker: {
+        name: 'AutoClicker 自动连点器',
+        tagline: '轻量、克制的 Windows 自动连点器',
         features: [
-          '多人实时消息同步',
-          '适合临时讨论与兴趣群聊',
-          '低门槛，进入即聊',
-          '可扩展房间管理与身份体系',
+          'Rust 负责计时与输入注入，1 ms 间隔也不漂移',
+          '多点位序列、间隔抖动与线性变速',
+          '全局热键、前台窗口绑定与运行时长上限',
+          '原生 Tauri 应用：深浅主题、中英双语、配置导入导出',
         ],
-        tags: ['实时', '聊天', 'WebSocket'],
+        tags: ['桌面', 'Tauri', 'Rust'],
       },
       nettool: {
         name: 'NetTool',

@@ -1,0 +1,136 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
+
+const START = 8;
+/** Never fill all the way on its own — the last 10% waits for the route. */
+const CEILING = 90;
+/** Give up (and hide) if a navigation never completes. */
+const WATCHDOG = 15000;
+
+/**
+ * Thin progress bar pinned to the top of the viewport.
+ *
+ * Static exports are cheap on the server but a slow network can leave a click
+ * looking dead for a second or more. This starts instantly on any same-origin
+ * link click and completes when the pathname actually changes, so users always
+ * get feedback that something is happening.
+ *
+ * Mounted once in the root layout — covers the home page, docs, project
+ * switching and language switching alike.
+ */
+export function NavProgress() {
+  const pathname = usePathname();
+  const [visible, setVisible] = useState(false);
+  const [value, setValue] = useState(0);
+
+  const trickle = useRef<ReturnType<typeof setInterval> | null>(null);
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const watchdog = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** True while a navigation we started is still pending. */
+  const pending = useRef(false);
+
+  const clearTimers = useCallback(() => {
+    if (trickle.current) clearInterval(trickle.current);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    if (watchdog.current) clearTimeout(watchdog.current);
+    trickle.current = null;
+    hideTimer.current = null;
+    watchdog.current = null;
+  }, []);
+
+  const start = useCallback(() => {
+    if (pending.current) return;
+    pending.current = true;
+    clearTimers();
+
+    setVisible(true);
+    setValue(START);
+
+    trickle.current = setInterval(() => {
+      setValue((v) => (v >= CEILING ? v : v + Math.max(0.6, (CEILING - v) * 0.14)));
+    }, 180);
+
+    watchdog.current = setTimeout(() => {
+      pending.current = false;
+      clearTimers();
+      setVisible(false);
+      setValue(0);
+    }, WATCHDOG);
+  }, [clearTimers]);
+
+  const finish = useCallback(() => {
+    if (!pending.current) return;
+    pending.current = false;
+    clearTimers();
+
+    setValue(100);
+    hideTimer.current = setTimeout(() => {
+      setVisible(false);
+      setValue(0);
+    }, 240);
+  }, [clearTimers]);
+
+  // Complete the bar once the new route has rendered.
+  const firstRoute = useRef(true);
+  useEffect(() => {
+    if (firstRoute.current) {
+      firstRoute.current = false;
+      return;
+    }
+    finish();
+  }, [pathname, finish]);
+
+  // Start on any same-origin link click / back-forward navigation.
+  useEffect(() => {
+    function onClick(event: MouseEvent) {
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const anchor = (event.target as HTMLElement | null)?.closest?.('a');
+      if (!anchor) return;
+      if (anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href || href.startsWith('#') || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+
+      let url: URL;
+      try {
+        url = new URL(href, window.location.href);
+      } catch {
+        return;
+      }
+      if (url.origin !== window.location.origin) return;
+      // Same page, only a hash/query change — no navigation worth waiting for.
+      if (url.pathname === window.location.pathname && url.search === window.location.search) return;
+
+      start();
+    }
+
+    document.addEventListener('click', onClick, true);
+    window.addEventListener('popstate', start);
+
+    return () => {
+      document.removeEventListener('click', onClick, true);
+      window.removeEventListener('popstate', start);
+      clearTimers();
+    };
+  }, [start, clearTimers]);
+
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-x-0 top-0 z-[9999] h-[3px] transition-opacity duration-300"
+      style={{ opacity: visible ? 1 : 0 }}
+    >
+      <div
+        className="h-full bg-fd-primary shadow-[0_0_10px_rgba(120,120,255,0.55)]"
+        style={{
+          width: `${value}%`,
+          transition: value === 0 ? 'none' : 'width 220ms ease-out',
+        }}
+      />
+    </div>
+  );
+}

@@ -11,7 +11,7 @@ import {
   CodeXml,
   ExternalLink,
   Lightbulb,
-  MessagesSquare,
+  MousePointerClick,
   Network,
   PencilRuler,
   RefreshCw,
@@ -42,11 +42,11 @@ const projects: Array<{
     glow: 'bg-sky-500/20',
   },
   {
-    key: 'hchat',
-    icon: MessagesSquare,
-    href: 'https://chat.hn3.top',
-    accent: 'from-emerald-500 to-teal-600',
-    glow: 'bg-emerald-500/20',
+    key: 'autoclicker',
+    icon: MousePointerClick,
+    href: 'https://github.com/hn1318/AutoClicker',
+    accent: 'from-teal-500 to-cyan-600',
+    glow: 'bg-teal-500/20',
   },
   {
     key: 'nettool',
@@ -450,9 +450,21 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-fd-border pt-6 text-xs text-fd-muted-foreground sm:flex-row">
             <p>&copy; {new Date().getFullYear()} MakerStudio. {dict.footer.rights}</p>
-            <p>
-              Next.js · Fumadocs · Tailwind CSS · Cloudflare
-            </p>
+            <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+              <a
+                href="https://status.hn3.top/status/u"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-fd-border bg-fd-card px-2.5 py-1 font-medium transition-colors hover:border-fd-primary/40 hover:text-fd-foreground"
+              >
+                <span className="relative flex size-1.5">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+                </span>
+                Status
+              </a>
+              <p>Next.js · Fumadocs · Tailwind CSS · Cloudflare</p>
+            </div>
           </div>
         </div>
       </footer>

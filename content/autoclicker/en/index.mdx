@@ -1,0 +1,62 @@
+---
+title: AutoClicker
+description: A lightweight, disciplined auto clicker for Windows — getting started
+---
+
+Welcome to the AutoClicker documentation.
+
+AutoClicker is a lightweight, deliberately restrained auto clicker for Windows. **Rust** owns the timing and input injection while **Vue 3** only paints the UI — no click ever passes through a JavaScript timer, so even a 1 ms interval does not drift.
+
+## Features
+
+- **Click control** — interval in ms ⇄ Hz (two-way), single / double / hold, left / middle / right / X1 / X2 buttons, and a click-count limit
+- **Coordinate modes** — follow the cursor, or pin a fixed physical-pixel position (multi-monitor and DPI scaling aware; the UI shows logical pixels)
+- **Rhythm variation** — linear ramp, random range, interval jitter and coordinate jitter
+- **Multi-point sequences** — up to 100 steps, loopable, each step with its own button / count / hold duration / interval
+- **Keyboard repeat** — simulate key presses instead of mouse clicks
+- **Triggers & safeguards** — countdown, delayed start, max runtime, and foreground-window binding (only clicks when the window title / process name matches)
+- **Global hotkeys** — `F6` start/stop and `F7` emergency abort by default, working even when the window is unfocused or minimized
+- **Extras** — launch on startup, light/dark themes, bilingual UI, config import/export
+
+## Requirements
+
+- Windows 10 / 11 — injection is built on Win32 `SendInput`, so it is intentionally not cross-platform
+- Rust 1.85+ (edition 2024)
+- Node.js 20+ and pnpm
+- For packaged installers: Visual Studio Build Tools (MSVC) and the WebView2 runtime
+
+## Run from source
+
+```bash
+pnpm install
+pnpm tauri dev
+```
+
+## Build
+
+```bash
+pnpm tauri build
+```
+
+Artifacts land in `src-tauri/target/release/bundle/`. `pnpm build` only runs frontend type-checking and bundling (`vue-tsc --noEmit && vite build`).
+
+## Design notes
+
+- **Settings freeze once a session starts.** `start_clicking` snapshots the settings into an immutable `SessionConfig`, so editing the UI mid-run can never race the click loop.
+- **Stopping is immediate.** `stop_clicking` sets the cancel flag and joins the engine thread; nothing can land after it returns.
+- **Coordinates are always physical pixels** — conversion by monitor DPI happens only at the display layer, which avoids offsets introduced by scaling.
+- **It never clicks itself.** Before injecting, the target point's owning process is checked and the click is skipped when it hits the app's own window. Otherwise, in "follow cursor" mode the loop would land on the UI's own buttons and the injected down/up events would swallow the physical click — leaving you unable to press Stop.
+- **Errors are structured.** Rust only returns stable error codes plus parameters (e.g. `inputBlocked`, `hotkeyConflict`); the frontend translates them into the active language.
+- **Config file** — `settings.json` lives in the app data directory (open it via *Settings → About → Data directory*). Import/export uses native Rust dialogs and tolerates missing fields by falling back to `Settings::default()`.
+
+## FAQ
+
+**Clicks do nothing / `inputBlocked`** — the target window runs elevated. Windows UIPI blocks input injection from lower-integrity processes; start AutoClicker as administrator.
+
+**Hotkey does not respond** — another app owns the combination. You get a `hotkeyConflict` error; pick another combo. Hotkeys are re-registered automatically after a restart.
+
+**1 ms interval feels slower than expected** — injection itself costs time. When the loop falls behind it skips the compensating clicks instead of firing a burst, so the observed rate is the realistic ceiling.
+
+<Cards>
+  <Card title="GitHub Repository" href="https://github.com/hn1318/AutoClicker" />
+</Cards>

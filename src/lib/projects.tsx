@@ -1,11 +1,12 @@
 import type { LayoutTab } from 'fumadocs-ui/layouts/shared';
-import { BookOpen, Boxes, CloudSun, MessagesSquare, Network } from 'lucide-react';
+import { BookOpen, Boxes, CloudSun, MessagesSquare, MousePointerClick, Network } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 
 /** Products with a docs set, matching the home page project cards. */
 export const PROJECTS = [
   { key: 'makerstudio', title: 'MakerStudio', url: '/docs' },
   { key: 'hweather', title: 'HWeather', url: '/docs/hweather' },
+  { key: 'autoclicker', title: 'AutoClicker', url: '/docs/autoclicker' },
   { key: 'hchat', title: 'HChat', url: '/docs/hchat' },
   { key: 'nettool', title: 'NetTool', url: '/docs/nettool' },
   { key: 'campustao', title: 'CampusTao', url: '/docs/campustao' },
@@ -14,6 +15,7 @@ export const PROJECTS = [
 const ICONS: Record<string, React.ReactNode> = {
   makerstudio: <Boxes className="size-4" />,
   hweather: <CloudSun className="size-4" />,
+  autoclicker: <MousePointerClick className="size-4" />,
   hchat: <MessagesSquare className="size-4" />,
   nettool: <Network className="size-4" />,
   campustao: <BookOpen className="size-4" />,

@@ -1,4 +1,6 @@
 import {
+  autoclickerEn as autoclickerEnCol,
+  autoclickerZh as autoclickerZhCol,
   campustaoEn as campustaoEnCol,
   campustaoZh as campustaoZhCol,
   docsEn as docsEnCol,
@@ -75,6 +77,18 @@ export const campustaoZh = loader({
   plugins: [lucideIconsPlugin()],
 });
 
+// AutoClicker
+export const autoclickerEn = loader({
+  baseUrl: '/docs/autoclicker',
+  source: autoclickerEnCol.toFumadocsSource(),
+  plugins: [lucideIconsPlugin()],
+});
+export const autoclickerZh = loader({
+  baseUrl: '/zh/docs/autoclicker',
+  source: autoclickerZhCol.toFumadocsSource(),
+  plugins: [lucideIconsPlugin()],
+});
+
 /** All sources across every project & locale, for search indexing. */
 export const allSources = [
   sourceEn,
@@ -87,6 +101,8 @@ export const allSources = [
   nettoolZh,
   campustaoEn,
   campustaoZh,
+  autoclickerEn,
+  autoclickerZh,
 ];
 
 export function getSource(locale: Locale) {

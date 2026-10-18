@@ -31,6 +31,9 @@ export const nettoolZh = docs('content/nettool/zh');
 export const campustaoEn = docs('content/campustao/en');
 export const campustaoZh = docs('content/campustao/zh');
 
+export const autoclickerEn = docs('content/autoclicker/en');
+export const autoclickerZh = docs('content/autoclicker/zh');
+
 export default defineConfig({
   mdxOptions: {
     // MDX options
