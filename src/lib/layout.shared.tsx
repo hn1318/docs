@@ -26,6 +26,11 @@ export function baseOptions(
             url: `${localePrefix}/docs`,
             active: 'nested-url',
           },
+          {
+            text: dict.nav.downloads,
+            url: `${localePrefix}/downloads`,
+            active: 'nested-url',
+          },
         ]
       : [
           {
@@ -36,6 +41,11 @@ export function baseOptions(
           {
             text: dict.nav.docs,
             url: `${localePrefix}/docs`,
+            active: 'nested-url',
+          },
+          {
+            text: dict.nav.downloads,
+            url: `${localePrefix}/downloads`,
             active: 'nested-url',
           },
         ],

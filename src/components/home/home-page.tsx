@@ -2,17 +2,15 @@ import Link from 'next/link';
 import { getDictionary } from '@/i18n/dict';
 import type { Locale } from '@/i18n/config';
 import { gitConfig } from '@/lib/shared';
+import { homeProjects as projects } from '@/lib/home-projects';
+import { SiteFooter } from '@/components/site-footer';
 import { Reveal } from './reveal';
 import {
   ArrowRight,
-  BookOpen,
   Check,
-  CloudSun,
   CodeXml,
   ExternalLink,
   Lightbulb,
-  MousePointerClick,
-  Network,
   PencilRuler,
   RefreshCw,
   Rocket,
@@ -23,46 +21,6 @@ import {
 } from 'lucide-react';
 
 /* ---------------------------------- data ---------------------------------- */
-
-type ProjectKey = keyof ReturnType<typeof getDictionary>['projects']['items'];
-
-const projects: Array<{
-  key: ProjectKey;
-  icon: LucideIcon;
-  /** Target page when the user clicks the project (homepage or repo). */
-  href: string;
-  accent: string;
-  glow: string;
-}> = [
-  {
-    key: 'hwather',
-    icon: CloudSun,
-    href: 'https://weather.hn3.top',
-    accent: 'from-sky-500 to-blue-600',
-    glow: 'bg-sky-500/20',
-  },
-  {
-    key: 'autoclicker',
-    icon: MousePointerClick,
-    href: 'https://github.com/hn1318/AutoClicker',
-    accent: 'from-teal-500 to-cyan-600',
-    glow: 'bg-teal-500/20',
-  },
-  {
-    key: 'nettool',
-    icon: Network,
-    href: 'https://github.com/hn1318/netTool',
-    accent: 'from-violet-500 to-indigo-600',
-    glow: 'bg-violet-500/20',
-  },
-  {
-    key: 'campustao',
-    icon: BookOpen,
-    href: 'https://book.hn3.top',
-    accent: 'from-amber-500 to-orange-600',
-    glow: 'bg-amber-500/20',
-  },
-];
 
 const workflowIcons: LucideIcon[] = [Lightbulb, PencilRuler, RefreshCw, Rocket];
 
@@ -386,88 +344,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* ---------------------------------- Footer ---------------------------------- */}
-      <footer className="mt-auto border-t border-fd-border bg-fd-card/50">
-        <div className="mx-auto max-w-screen-lg px-6 py-12">
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-            {/* brand */}
-            <div className="lg:col-span-2">
-              <p className="text-lg font-semibold tracking-tight">MakerStudio</p>
-              <p className="mt-2 max-w-xs text-sm leading-relaxed text-fd-muted-foreground">
-                {dict.footer.tagline}
-              </p>
-            </div>
-
-            {/* products */}
-            <div>
-              <p className="text-sm font-semibold">{dict.footer.product}</p>
-              <ul className="mt-3 space-y-2">
-                {projects.map((project) => (
-                  <li key={project.key}>
-                    <a
-                      href={project.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-                    >
-                      {dict.projects.items[project.key].name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* resources */}
-            <div>
-              <p className="text-sm font-semibold">{dict.footer.resources}</p>
-              <ul className="mt-3 space-y-2">
-                <li>
-                  <Link
-                    href={`${prefix}/docs`}
-                    className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-                  >
-                    {dict.nav.docs}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`${prefix}/docs/privacy`}
-                    className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-                  >
-                    {dict.nav.privacy}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href={`${prefix}/docs/terms`}
-                    className="text-sm text-fd-muted-foreground transition-colors hover:text-fd-foreground"
-                  >
-                    {dict.nav.terms}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-fd-border pt-6 text-xs text-fd-muted-foreground sm:flex-row">
-            <p>&copy; {new Date().getFullYear()} MakerStudio. {dict.footer.rights}</p>
-            <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
-              <a
-                href="https://status.hn3.top/status/u"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-full border border-fd-border bg-fd-card px-2.5 py-1 font-medium transition-colors hover:border-fd-primary/40 hover:text-fd-foreground"
-              >
-                <span className="relative flex size-1.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-                </span>
-                Status
-              </a>
-              <p>Next.js · Fumadocs · Tailwind CSS · Cloudflare</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter locale={locale} />
     </main>
   );
 }
