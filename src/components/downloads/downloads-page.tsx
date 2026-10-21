@@ -13,6 +13,7 @@ import {
 import { Reveal } from '@/components/home/reveal';
 import { SiteFooter } from '@/components/site-footer';
 import { ChecksumCopy } from './checksum-copy';
+import { HeroAurora } from './hero-aurora';
 import { getDictionary } from '@/i18n/dict';
 import type { Locale } from '@/i18n/config';
 import {
@@ -280,13 +281,9 @@ export function DownloadsPage({ locale }: { locale: Locale }) {
     <main className="flex flex-1 flex-col">
       {/* ---------------------------------- Hero ---------------------------------- */}
       <section className="relative overflow-hidden border-b border-fd-border">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute top-[-30%] left-1/2 h-[560px] w-[560px] -translate-x-1/2 rounded-full bg-gradient-to-b from-teal-500/15 via-cyan-500/10 to-transparent blur-3xl" />
-          <div className="absolute top-[40%] right-[-10%] h-[380px] w-[380px] rounded-full bg-gradient-to-l from-violet-500/10 to-transparent blur-3xl" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-fd-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-fd-border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.35] [mask-image:radial-gradient(ellipse_60%_55%_at_50%_30%,black,transparent)]" />
-        </div>
+        <HeroAurora />
 
-        <div className="mx-auto max-w-screen-lg px-6 pt-32 pb-16 text-center">
+        <div className="mx-auto max-w-screen-lg px-6 pt-36 pb-24 text-center">
           <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full border border-fd-border bg-fd-card px-3 py-1 text-xs text-fd-muted-foreground">
               <Package className="size-3.5" />
