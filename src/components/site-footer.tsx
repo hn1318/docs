@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getDictionary } from '@/i18n/dict';
 import type { Locale } from '@/i18n/config';
 import { homeProjects } from '@/lib/home-projects';
+import { SiteStatus } from '@/components/site-status';
 
 /**
  * Site-wide footer: brand, product links, resources and the live status pill.
@@ -82,23 +83,13 @@ export function SiteFooter({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-fd-border pt-6 text-xs text-fd-muted-foreground sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} MakerStudio. {dict.footer.rights}</p>
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
-            <a
-              href="https://status.hn3.top/status/u"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-fd-border bg-fd-card px-2.5 py-1 font-medium transition-colors hover:border-fd-primary/40 hover:text-fd-foreground"
-            >
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-              </span>
-              Status
-            </a>
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-fd-border pt-6 text-xs text-fd-muted-foreground sm:flex-row">
+          <div className="flex flex-col items-center gap-1.5 text-center sm:flex-row sm:gap-3 sm:text-left">
+            <p>&copy; {new Date().getFullYear()} MakerStudio. {dict.footer.rights}</p>
+            <span aria-hidden className="hidden size-1 rounded-full bg-fd-border sm:block" />
             <p>Next.js · Fumadocs · Tailwind CSS · Cloudflare</p>
           </div>
+          <SiteStatus locale={locale} labels={dict.status} />
         </div>
       </div>
     </footer>

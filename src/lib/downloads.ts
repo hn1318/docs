@@ -91,7 +91,7 @@ export const DOWNLOAD_PROJECTS: DownloadProject[] = [
             arch: 'x64',
             format: 'EXE',
             size: '1.77 MB',
-            note: { en: 'Setup — recommended', zh: '安装版，推荐' },
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
             sha256: '31145140e29e5debc16d047aa759eb84a60f15598ce5ca4bb22ed91687466b13',
             github:
               'https://github.com/hn1318/AutoClicker/releases/download/v0.2.0/AutoClicker_0.2.0_x64-setup.exe',
@@ -123,7 +123,7 @@ export const DOWNLOAD_PROJECTS: DownloadProject[] = [
             arch: 'x64',
             format: 'EXE',
             size: '1.72 MB',
-            note: { en: 'Setup — recommended', zh: '安装版，推荐' },
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
             sha256: '3517e82bb3d13241ee4bcdba8197954c41e2b865cf9c75c83f7a6a1769fb31f1',
             github:
               'https://github.com/hn1318/AutoClicker/releases/download/v0.1/AutoClicker_0.1.0_x64-setup.exe',
