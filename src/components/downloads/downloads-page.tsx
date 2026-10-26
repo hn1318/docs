@@ -13,6 +13,7 @@ import {
   Terminal,
 } from 'lucide-react';
 import { SiteFooter } from '@/components/site-footer';
+import { HeroBackdrop } from '@/components/hero-backdrop';
 import { CopyValue } from './copy-value';
 import { getDictionary } from '@/i18n/dict';
 import type { Locale } from '@/i18n/config';
@@ -414,13 +415,8 @@ export function DownloadsPage({ locale }: { locale: Locale }) {
   return (
     <main className="flex flex-1 flex-col">
       {/* ---------------------------------- Hero ---------------------------------- */}
-      <section className="relative overflow-hidden border-b border-fd-border">
-        {/* Static backdrop — deliberately no moving parts. */}
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--color-fd-border)_1px,transparent_1px),linear-gradient(to_bottom,var(--color-fd-border)_1px,transparent_1px)] bg-[size:72px_72px] opacity-40 [mask-image:radial-gradient(ellipse_80%_70%_at_35%_-10%,black,transparent)]" />
-          <div className="absolute -top-40 left-[18%] h-96 w-[42rem] rounded-full bg-teal-500/[0.07] blur-3xl" />
-          <div className="absolute -top-24 right-[-10%] h-80 w-[30rem] rounded-full bg-indigo-500/[0.07] blur-3xl" />
-        </div>
+      <section className="relative overflow-hidden">
+        <HeroBackdrop />
 
         <div className="mx-auto max-w-screen-lg px-6 pt-32 pb-16 sm:pt-36 sm:pb-20">
           <div

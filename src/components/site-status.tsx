@@ -33,6 +33,24 @@ const TONE_TEXT: Record<StatusTone, string> = {
   unknown: 'text-fd-muted-foreground',
 };
 
+/**
+ * Status dot with a pulsing ring — every state gets one, so the footer reads as
+ * live data at a glance. The ping is skipped when the user prefers less motion.
+ */
+function StatusDot({ tone, className }: { tone: StatusTone; className?: string }) {
+  return (
+    <span className={cn('relative inline-flex size-1.5 shrink-0', className)}>
+      <span
+        className={cn(
+          'absolute inline-flex size-full rounded-full opacity-70 motion-safe:animate-ping',
+          DOT[tone],
+        )}
+      />
+      <span className={cn('relative inline-flex size-1.5 rounded-full', DOT[tone])} />
+    </span>
+  );
+}
+
 function Entry({
   name,
   meta,
@@ -48,7 +66,7 @@ function Entry({
     'flex items-start gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-fd-accent/60';
   const content = (
     <>
-      <span className={cn('mt-1.5 size-1.5 shrink-0 rounded-full', DOT[tone])} />
+      <StatusDot tone={tone} className="mt-1.5" />
       <span className="min-w-0">
         <span className="block truncate text-xs font-medium text-fd-foreground">{name}</span>
         {meta ? (
@@ -167,13 +185,7 @@ export function SiteStatus({ locale, labels }: { locale: Locale; labels: Diction
         title={labels.open}
         className="inline-flex items-center gap-2 rounded-full border border-fd-border bg-fd-card px-2.5 py-1 text-xs font-medium text-fd-muted-foreground transition-colors hover:border-fd-primary/40 hover:text-fd-foreground"
       >
-        <span
-          className={cn(
-            'size-1.5 shrink-0 rounded-full',
-            DOT[tone],
-            tone === 'issues' && 'motion-safe:animate-pulse',
-          )}
-        />
+        <StatusDot tone={tone} />
         <span className="max-w-[13rem] truncate">{text}</span>
         <ArrowUpRight className="size-3 opacity-60" />
       </a>
@@ -194,7 +206,7 @@ export function SiteStatus({ locale, labels }: { locale: Locale; labels: Diction
             <span
               className={cn('inline-flex shrink-0 items-center gap-1.5 text-[11px] font-medium', TONE_TEXT[tone])}
             >
-              <span className={cn('size-1.5 rounded-full', DOT[tone])} />
+              <StatusDot tone={tone} />
               {text}
             </span>
           </div>
