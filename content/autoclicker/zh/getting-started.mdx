@@ -1,0 +1,49 @@
+---
+title: 安装与快速上手
+description: 在 Windows 上装好 AutoClicker，一分钟内跑起第一次自动点击
+---
+
+<Callout type="info" title="当前版本">
+**v0.3.0** · Windows 10 / 11 · MIT 许可证
+</Callout>
+
+## 安装
+
+### 普通用户
+
+从 [GitHub Releases](https://github.com/hn1318/AutoClicker/releases/latest) 下载安装包：
+
+| 文件 | 说明 |
+| --- | --- |
+| `AutoClicker_x.x.x_x64.msi` | MSI 安装包，适合静默或批量部署 |
+| `AutoClicker_x.x.x_x64-setup.exe` | NSIS 安装向导 |
+
+安装完成后从开始菜单启动即可。
+
+<Callout type="warn" title="首次运行的 SmartScreen 提示">
+安装包未做代码签名，Windows 可能弹出 SmartScreen 警告。点击 **更多信息 → 仍要运行** 即可继续。
+</Callout>
+
+### 从源码构建
+
+```bash
+pnpm install        # 需要 Node.js 20+ 与 pnpm
+pnpm tauri dev      # 开发调试
+pnpm tauri build    # 构建，产物在 src-tauri/target/release/bundle/
+```
+
+环境要求：Windows 10/11、Rust 1.85+（edition 2024）、Node.js 20+、pnpm；构建安装包另需 Visual Studio Build Tools（MSVC）与 WebView2 运行时。
+
+## 第一次连点
+
+三步开始：
+
+1. **设置间隔**：在「点击」分组填入毫秒或频率（Hz），两者边输入边换算。
+2. **选择位置**：默认开启「跟随光标」，点哪里就连哪里；关闭后用「拾取坐标」固定一个点。
+3. **按 `F6` 开始 / 停止**。任何时候按 `F7` 或连按两次 `Esc` 都可以紧急中止。
+
+运行中，界面底部的状态栏会实时显示状态、已点击次数、运行时长与实际 CPS（每秒点击数）。
+
+<Callout type="tip" title="接下来看什么">
+[界面详解](/zh/docs/autoclicker/interface/) 讲节奏曲线、抖动与窗口绑定——让连点节奏更像真人的那几项设置。
+</Callout>

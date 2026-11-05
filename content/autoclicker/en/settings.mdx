@@ -1,0 +1,51 @@
+---
+title: Settings, tray & configuration
+description: Appearance, startup, updates, the tray icon, and where your settings actually live
+---
+
+Open the settings page with the ⚙ button in the title bar. It has two tabs: **General** and **About**.
+
+## General
+
+| Group | Options |
+| --- | --- |
+| **Appearance** | Theme (follow system / light / dark), language (follow system / 中文 / English) |
+| **Startup** | Launch at login, and what the close button does (ask every time / run in background / quit) |
+| **Hotkeys** | Start-stop hotkey and emergency-abort hotkey |
+| **Updates** | Current version, update source (empty = read the latest GitHub release; or point it at any JSON endpoint returning `{ "version": "1.2.3" }`), a **Check for updates** button, and a one-click *Go to download* when a newer version exists |
+| **Storage** | View / change / reset the data directory, open it in Explorer |
+| **Backup** | Export settings to a `.json` file, import a `.json` file back |
+
+## About
+
+App info: version, stack (Rust · Tauri v2 · Vue 3 · TypeScript), how clicks are injected (Win32 `SendInput`, physical pixels) and the licence (MIT).
+
+## Tray icon and close behaviour
+
+What the close button does is decided by **Settings → Close button**:
+
+- **Ask every time** — shows “Quit, or stay in the background?” with an optional *remember my choice*
+- **Run in background** — the window hides, the process stays in the tray, and neither the hotkeys nor a running session is interrupted
+- **Quit immediately** — the process ends right away
+
+Tray controls:
+
+- **Left click** — restore / hide the main window
+- **Right click** — a menu that includes **Quit**
+
+<Callout type="warn" title="Tray fallback">
+If the tray icon cannot be created, *run in background* automatically degrades to quitting. That avoids the worst case: a hidden window you can never bring back.
+</Callout>
+
+## Where settings live
+
+- Default location: `%APPDATA%\top.hn3.autoclicker`, with `settings.json` inside
+- **Settings → Storage → Change directory** can point the data directory anywhere (a USB stick, a cloud-synced folder); the existing configuration **moves with it**. *Reset to default* switches back
+- The pointer to that directory always lives at `%APPDATA%\top.hn3.autoclicker\location.json`, so the app can find its data no matter where you moved it
+- Writes are atomic (temp file + rename), so a crash mid-write cannot corrupt the configuration
+
+## Import / export
+
+- **Export** — Settings → Backup → Export, choose a path, get a `.json` file
+- **Import** — pick a previously exported `.json` to restore every setting; missing fields fall back to defaults
+- Upgrading from the old package id `com.jlhan.autoclicker`? Copy the old `settings.json` into the new directory.

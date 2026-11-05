@@ -1,0 +1,78 @@
+---
+title: Interface in depth
+description: Every control on the main window — click, position, advanced settings and the status bar
+---
+
+The main window is organised into three groups: **Click**, **Position** and **Advanced**, with a status bar and the start/stop button pinned to the bottom.
+
+## Click
+
+| Option | Description |
+| --- | --- |
+| **Click interval** | Gap between two clicks. ms ⇄ Hz convert both ways; 1 ms minimum |
+| **Click count** | *Unlimited* keeps clicking until you stop; *Fixed count* stops by itself at the target |
+| **Mouse button** | Left / middle / right / X1 / X2 (side buttons) |
+| **Click type** | Single click / double click / hold |
+| **Hold duration** | Only for *hold*: how long each press lasts (1–10000 ms) |
+
+## Position
+
+| Option | Description |
+| --- | --- |
+| **Follow cursor** | On: every click lands wherever the pointer currently is. Off: a fixed coordinate is used |
+| **X / Y** | The fixed coordinate. The UI shows **logical pixels** while the app stores physical pixels, so multi-monitor and DPI-scaled setups do not drift. The row also shows the current scale factor (e.g. `scale 1.50×`) |
+| **Pick position** | Starts a 3-second countdown — move the pointer to the target, and when it ends the coordinate is captured and fixed mode switches on |
+| **Cursor tracking** | A live coordinate overlay next to the pointer — see [Hotkeys & cursor overlay](/docs/autoclicker/hotkeys/) |
+
+## Advanced
+
+### Rhythm (interval curve)
+
+| Mode | Description |
+| --- | --- |
+| Constant | A fixed interval |
+| Linear ramp | Interval eases from *Click interval* to *End interval* |
+| Random range | Every interval is picked randomly between *Min* and *Max* |
+
+### Jitter
+
+| Option | Description |
+| --- | --- |
+| Interval jitter | Adds a random number of milliseconds to each interval, imitating human rhythm (0 disables it) |
+| Coordinate jitter | Offsets each click by ±N pixels (0 disables it) |
+
+### Timing
+
+| Option | Description |
+| --- | --- |
+| Start countdown | Counts down 0–10 seconds before starting |
+| Delayed start | Waits N seconds after you press start (0 disables it) |
+| Runtime limit | Stops automatically after N seconds of running (0 disables it) |
+
+### Keyboard repeat
+
+Turned on, AutoClicker stops simulating the mouse and instead **repeats a key** at the configured interval (hold `F` to keep firing). Click type and button rules apply the same way.
+
+### Foreground window binding
+
+With this enabled, clicks only happen while a matching window is in the foreground — switch away and it pauses:
+
+- **Window title** — matches when the foreground title contains the keyword (leave empty to ignore titles)
+- **Process name** — e.g. `chrome.exe` (leave empty to ignore processes)
+- **Read current window** — focus the target window, wait 3 seconds, and both fields are filled in for you
+
+## Status bar
+
+Left to right:
+
+- **State** — Ready / Counting down (`starting in N s`) / Running
+- **Clicks so far**, elapsed time and the real CPS
+- **Start / Stop** button on the right
+
+<Callout type="warn" title="Settings lock while running">
+Once a session starts, every setting in the main window becomes read-only (a 🔒 hint appears at the top). This is intentional: the run uses an immutable snapshot of the settings taken at the moment you pressed start, so UI edits can never race the click loop. Stop the run to edit again.
+</Callout>
+
+## Multi-point sequences
+
+The settings model supports sequences of up to **100 steps**. Each step carries its own coordinate, mouse button, click type, hold duration and delay before the next step, and the whole sequence can loop. With `sequenceEnabled` on, the engine walks the steps in order — useful for “click several places in turn” work.

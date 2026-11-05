@@ -1,0 +1,44 @@
+---
+title: FAQ
+description: The problems people actually run into, and what to do about each one
+---
+
+### Clicks do nothing, or I get `inputBlocked`
+
+The target program runs elevated (as administrator). Windows UIPI blocks input injection from lower-integrity processes. **Run AutoClicker as administrator** — the injected clicks then pass through.
+
+### A hotkey does nothing
+
+Another program owns the combination; you get a `hotkeyConflict` error. Bind a different one. Changes take effect immediately, no restart needed.
+
+### I set 1 ms but never reach 1000 CPS
+
+Injection itself costs time. When the loop falls behind it **skips** the compensating clicks instead of firing a burst, so the observed rate is the stable ceiling for your machine. The *real CPS* in the status bar is the honest number.
+
+### Does stopping leave one extra click behind?
+
+No. Stopping is immediate: the cancel flag is set and the click thread is joined, so nothing can land after it returns.
+
+### Every setting greyed out while running
+
+Settings are frozen on purpose — the session runs on a snapshot taken when you pressed start. Press `F6` to stop, then edit.
+
+### Can it click its own window?
+
+No. Before injecting, the app checks which process owns the target point and skips the click when it belongs to AutoClicker itself. That is why the *Follow cursor* mode can never swallow your own Stop button.
+
+### Check for updates fails
+
+The default source is the GitHub release feed. A repository without a published release returns 404, and unauthenticated calls are limited to 60 per hour. Put a custom JSON endpoint (`{ "version": "1.2.3" }`) under **Settings → Update source**.
+
+### The cursor overlay disappeared
+
+Check whether *Cursor tracking* is set to **Off**. If it is *While running*, the overlay only shows during an active session.
+
+### I closed the window but the app keeps running
+
+The close button is set to *Run in background* (or you ticked *remember my choice* earlier). Click the tray icon to bring it back; to quit, use the tray menu, or set the close behaviour back to *Ask every time*.
+
+### Double `Esc` does nothing
+
+The failsafe is enabled by default, but some applications intercept `Esc`. Use `F7` instead.

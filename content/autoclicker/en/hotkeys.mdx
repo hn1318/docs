@@ -1,0 +1,41 @@
+---
+title: Hotkeys & cursor overlay
+description: Control AutoClicker without leaving the app you are working in
+---
+
+## Hotkeys
+
+| Hotkey | Default | What it does |
+| --- | --- | --- |
+| Start / stop | `F6` | Toggles clicking |
+| Emergency abort | `F7` | Stops immediately, with no trailing click |
+| Failsafe | Double `Esc` | Backup path for the same abort |
+
+- **Global**: hotkeys work while the window is unfocused or minimised to the tray.
+- Customise them under **Settings → Hotkeys** — click the field, then press the combination you want.
+- If another program already owns the combination you get a `hotkeyConflict` error; pick another one. A new binding is registered immediately, and a failed registration rolls back to the previous hotkey.
+
+<Callout type="tip" title="Why two abort keys">
+`F7` is the primary panic button. The double-`Esc` failsafe exists for keyboards or setups where function keys are hard to reach — but some applications swallow `Esc`, so `F7` stays the reliable option.
+</Callout>
+
+## Cursor overlay
+
+When enabled, a small always-on-top, click-through overlay follows the pointer and shows:
+
+- the current **physical pixel** coordinate
+- the current **screen scale factor**
+
+Three modes:
+
+| Mode | Behaviour |
+| --- | --- |
+| Always tracking | The overlay is always visible |
+| While running | Only shown during an active session |
+| Off | Hidden |
+
+The overlay never receives mouse events — clicks pass straight through to the window underneath — so you can leave it on while positioning a target. It is especially handy before using **Pick position**.
+
+<Callout type="info" title="Overlay missing?">
+Check whether *Cursor tracking* is set to **Off**. If it is set to *While running*, the overlay only appears once clicking starts.
+</Callout>

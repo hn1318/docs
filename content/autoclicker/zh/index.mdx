@@ -18,6 +18,17 @@ AutoClicker 是一款轻量、克制的 Windows 自动连点器。**Rust** 负�
 - **全局热键** — 默认 `F6` 开始/停止、`F7` 紧急中止，窗口未聚焦或最小化时同样有效
 - **其他** — 开机自启、深浅色主题、中英双语、配置导入/导出
 
+## 使用文档
+
+<Cards>
+  <Card title="安装与快速上手" href="/zh/docs/autoclicker/getting-started/" description="安装包、SmartScreen 提示，以及第一次自动点击" />
+  <Card title="界面详解" href="/zh/docs/autoclicker/interface/" description="点击、位置、节奏、抖动与窗口绑定" />
+  <Card title="热键与鼠标浮层" href="/zh/docs/autoclicker/hotkeys/" description="不切回主界面也能开始、停止与定位" />
+  <Card title="设置、托盘与配置" href="/zh/docs/autoclicker/settings/" description="配置存在哪，以及怎么备份" />
+  <Card title="常见问题" href="/zh/docs/autoclicker/faq/" description="实际会踩到的那些坑" />
+  <Card title="GitHub 仓库" href="https://github.com/hn1318/AutoClicker" />
+</Cards>
+
 ## 环境要求
 
 - Windows 10 / 11（点击注入基于 Win32 `SendInput`，不跨平台）
@@ -47,16 +58,4 @@ pnpm tauri build
 - **坐标一律使用物理像素**，只在展示层按显示器 DPI 换算，避免缩放比例导致的偏移。
 - **不点击自身窗口**：注入前会检查目标点所属进程，命中本程序窗口时跳过该次点击。否则「跟随光标」模式下连点会跟着鼠标落在界面按钮上，注入的按下/抬起事件会把物理点击冲掉，用户就再也点不动「停止」了。
 - **错误是结构化的**：Rust 侧只返回稳定错误码 + 参数（如 `inputBlocked`、`hotkeyConflict`），由前端翻译成当前语言的提示。
-- **配置文件**：`settings.json` 存于应用数据目录（设置页「关于 → 数据目录」可打开）。导入/导出使用 Rust 侧的原生对话框，允许部分字段缺失（缺省值来自 `Settings::default()`）。
-
-## 常见问题
-
-**点击无效 / 报 `inputBlocked`** — 目标窗口以管理员权限运行。Windows 的 UIPI 阻止低完整性进程向其注入输入，请以管理员身份启动本程序。
-
-**热键不生效** — 热键被其他程序占用时会提示 `hotkeyConflict`，换一个组合即可；重启后设置会自动重新注册。
-
-**间隔 1 ms 但实际更慢** — 注入本身有开销，程序会在落后时跳过补偿点击而不是补发突发点击，因此实际速率是能达到的上限。
-
-<Cards>
-  <Card title="GitHub 仓库" href="https://github.com/hn1318/AutoClicker" />
-</Cards>
+- **配置文件**：`settings.json` 存于应用数据目录（设置页「存储 → 数据目录」可打开）。导入/导出使用 Rust 侧的原生对话框，允许部分字段缺失（缺省值来自 `Settings::default()`）。

@@ -1,0 +1,49 @@
+---
+title: Installation & quick start
+description: Get AutoClicker running on Windows and fire your first automated click in under a minute
+---
+
+<Callout type="info" title="Current release">
+Version **v0.3.0** · Windows 10 / 11 · MIT licence
+</Callout>
+
+## Install
+
+### Normal users
+
+Download an installer from [GitHub Releases](https://github.com/hn1318/AutoClicker/releases/latest):
+
+| File | What it is |
+| --- | --- |
+| `AutoClicker_x.x.x_x64.msi` | MSI package — silent or managed installs |
+| `AutoClicker_x.x.x_x64-setup.exe` | NSIS setup wizard |
+
+Launch AutoClicker from the Start menu once the installer finishes.
+
+<Callout type="warn" title="SmartScreen on first run">
+The installers are not code-signed, so Windows may show a SmartScreen prompt. Choose **More info → Run anyway** to continue.
+</Callout>
+
+### From source
+
+```bash
+pnpm install        # requires Node.js 20+ and pnpm
+pnpm tauri dev      # run in development
+pnpm tauri build    # build; artifacts land in src-tauri/target/release/bundle/
+```
+
+Requirements: Windows 10/11, Rust 1.85+ (edition 2024), Node.js 20+, pnpm. Building an installer additionally needs Visual Studio Build Tools (MSVC) and the WebView2 runtime.
+
+## Your first click
+
+Three steps:
+
+1. **Set the interval** — enter milliseconds or a frequency in Hz under *Click*; the two convert as you type.
+2. **Choose where to click** — *Follow cursor* is on by default (it clicks wherever the pointer is). Turn it off and use **Pick position** to pin a fixed point.
+3. **Press `F6` to start / stop.** At any moment, `F7` or a double `Esc` aborts immediately.
+
+The status bar at the bottom shows live state, click count, elapsed time and the real CPS (clicks per second) as you run.
+
+<Callout type="tip" title="Then what?">
+Read [Interface in depth](/docs/autoclicker/interface/) for rhythm curves, jitter and window binding — the settings that make automated clicking look human.
+</Callout>
