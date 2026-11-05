@@ -79,6 +79,38 @@ export const DOWNLOAD_PROJECTS: DownloadProject[] = [
     docs: '/docs/autoclicker',
     releases: [
       {
+        version: 'v0.3.0',
+        releasedAt: '2026-11-05',
+        channel: 'stable',
+        releaseUrl: 'https://github.com/hn1318/AutoClicker/releases/tag/v0.3.0',
+        assets: [
+          {
+            id: 'ac-030-exe',
+            file: 'AutoClicker_0.3.0_x64-setup.exe',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'EXE',
+            size: '1.71 MB',
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
+            sha256: '9c5cd423d44c071a80187b74a500c016fffad6c141883532687edf0f6398b0a2',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v0.3.0/AutoClicker_0.3.0_x64-setup.exe',
+          },
+          {
+            id: 'ac-030-msi',
+            file: 'AutoClicker_0.3.0_x64_en-US.msi',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'MSI',
+            size: '2.46 MB',
+            note: { en: 'MSI package — for silent / managed installs', zh: 'MSI 安装包，适合静默或批量部署' },
+            sha256: '4469f5276ecd2d95a3a1e345149ebb0505a6dab3bd5a412c08b0e8d8f9eaec84',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v0.3.0/AutoClicker_0.3.0_x64_en-US.msi',
+          },
+        ],
+      },
+      {
         version: 'v0.2.0',
         releasedAt: '2026-10-19',
         channel: 'stable',
@@ -182,7 +214,7 @@ export function mirrorHref(
   route: MirrorRoute,
   project: DownloadProject,
   version: string,
-  asset: DownloadAsset,
+  asset: { file: string },
 ) {
   return `${route.base.replace(/\/$/, '')}/${project.key}/${version}/${asset.file}`;
 }
@@ -190,4 +222,48 @@ export function mirrorHref(
 /** Locale-aware short tagline helper. */
 export function pick(locale: Locale, text: { en: string; zh: string }) {
   return text[locale] ?? text.en;
+}
+
+/* ----------------------------- runtime view model ----------------------------- */
+
+/**
+ * What the page actually renders. Same shape for the bake-time fallback and
+ * for data pulled live from the GitHub API — `sha256` is optional because older
+ * releases (and some uploads) carry no digest.
+ */
+export interface AssetView {
+  id: string;
+  file: string;
+  platform: Platform;
+  arch: string;
+  format: string;
+  size: string;
+  sha256?: string;
+  github: string;
+  note: { en: string; zh: string };
+}
+
+export interface ReleaseView {
+  version: string;
+  releasedAt: string;
+  channel: 'stable' | 'beta';
+  releaseUrl: string;
+  assets: AssetView[];
+}
+
+/**
+ * Turn the baked manifest into the runtime view model.
+ *
+ * This is the instant-render fallback: it is what the static HTML ships with,
+ * and what the page keeps showing if the GitHub request fails (offline, rate
+ * limit, blocked network).
+ */
+export function bakedReleases(project: DownloadProject): ReleaseView[] {
+  return project.releases.map((release) => ({
+    version: release.version,
+    releasedAt: release.releasedAt,
+    channel: release.channel,
+    releaseUrl: release.releaseUrl,
+    assets: release.assets.map((asset) => ({ ...asset })),
+  }));
 }

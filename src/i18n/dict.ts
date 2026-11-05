@@ -162,6 +162,9 @@ const en = {
     heroNote: 'Every file ships with a published SHA-256 checksum, so you can verify it after downloading.',
     manifestTitle: 'Build manifest',
     manifestVerified: 'Checksums published',
+    liveSync: 'Live from GitHub',
+    liveSyncHint:
+      'Read straight from the GitHub Releases API when the page loads — a new release appears without a rebuild.',
     latest: 'Latest',
     stable: 'Stable',
     beta: 'Beta',
@@ -397,6 +400,8 @@ const zh: typeof en = {
     heroNote: '每个文件都会公布 SHA-256 校验值，下载后可自行核对。',
     manifestTitle: '构建清单',
     manifestVerified: '已公布校验值',
+    liveSync: 'GitHub 实时同步',
+    liveSyncHint: '页面加载时直接读取 GitHub Releases API，发布新版本无需重新构建即可显示。',
     latest: '最新版',
     stable: '稳定版',
     beta: '测试版',
