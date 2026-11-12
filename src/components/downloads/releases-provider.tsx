@@ -1,24 +1,43 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { DOWNLOAD_PROJECTS, bakedReleases, type AssetView, type ReleaseView } from '@/lib/downloads';
+import {
+  DOWNLOAD_PROJECTS,
+  bakedReleases,
+  type AssetView,
+  type ReleaseView,
+} from '@/lib/downloads';
 import { fetchReleases } from '@/lib/github-releases';
+import { fetchOpenList, mergeOpenListAssets, type OpenListSource } from '@/lib/openlist';
+
+export type ReleasesOrigin = 'live' | 'baked';
 
 interface ReleasesState {
   /** Release list per project key — live data when available, baked data otherwise. */
   byProject: Record<string, ReleaseView[]>;
-  /** True once at least one project was refreshed from the GitHub API. */
+  /** OpenList mirror per project key, when the folder could be read. */
+  openList: Record<string, OpenListSource>;
+  /** True once at least one project was refreshed from a network source. */
   live: boolean;
   /** Epoch ms of the last successful sync (0 when still on baked data). */
   syncedAt: number;
+}
+
+interface ProjectReleases {
+  releases: ReleaseView[];
+  live: boolean;
+  source: ReleasesOrigin;
+  syncedAt: number;
+  /** OpenList folder for this project (undefined when unreachable). */
+  openList?: OpenListSource;
 }
 
 const ReleasesContext = createContext<ReleasesState | null>(null);
 
 /**
  * Keeps the curated wording (file notes, checksums) of the baked manifest while
- * taking versions, dates and download URLs from GitHub. New files that never
- * appeared in the baked data keep their auto-generated note.
+ * taking versions, dates and download URLs from GitHub / OpenList. Files that
+ * never appeared in the baked data keep their auto-generated note.
  */
 function mergeCurated(live: ReleaseView[], baked: ReleaseView[]): ReleaseView[] {
   const curated = new Map<string, AssetView>();
@@ -35,19 +54,19 @@ function mergeCurated(live: ReleaseView[], baked: ReleaseView[]): ReleaseView[] 
         ...asset,
         note: previous.note,
         sha256: asset.sha256 ?? previous.sha256,
+        mirror: asset.mirror ?? previous.mirror,
       };
     }),
   }));
 }
 
 /**
- * Fetches every project's releases from GitHub once per page load and hands the
- * result to the cards + hero manifest.
+ * Fetches every project's releases (GitHub) and its OpenList mirror once per
+ * page load, then hands the merged result to the cards and hero manifest.
  *
  * The static HTML already contains the baked manifest, so the first paint is
- * always complete; the live data simply replaces it a moment later. If the
- * request fails (offline, rate limit, blocked network) nothing changes and the
- * page keeps working with the baked data.
+ * always complete; network data only refines it. Any failure (offline, rate
+ * limit, blocked CORS, missing folder) leaves the previous data in place.
  */
 export function ReleasesProvider({ children }: { children: ReactNode }) {
   const fallback = useMemo<Record<string, ReleaseView[]>>(
@@ -57,6 +76,7 @@ export function ReleasesProvider({ children }: { children: ReactNode }) {
 
   const [state, setState] = useState<ReleasesState>({
     byProject: fallback,
+    openList: {},
     live: false,
     syncedAt: 0,
   });
@@ -65,22 +85,41 @@ export function ReleasesProvider({ children }: { children: ReactNode }) {
     let cancelled = false;
 
     void Promise.all(
-      DOWNLOAD_PROJECTS.map(
-        async (project) => [project.key, await fetchReleases(project.repo)] as const,
-      ),
+      DOWNLOAD_PROJECTS.map(async (project) => {
+        // 两条线路并行：GitHub 提供版本/校验值，OpenList 提供备用直链。
+        const [github, openlist] = await Promise.all([
+          fetchReleases(project.repo),
+          fetchOpenList(project.folder),
+        ]);
+        return { key: project.key, github, openlist } as const;
+      }),
     ).then((results) => {
       if (cancelled) return;
 
-      const byProject = { ...fallback };
+      const byProject: Record<string, ReleaseView[]> = { ...fallback };
+      const openList: Record<string, OpenListSource> = {};
       let live = false;
 
-      for (const [key, releases] of results) {
-        if (!releases?.length) continue;
-        byProject[key] = mergeCurated(releases, fallback[key] ?? []);
-        live = true;
+      for (const { key, github, openlist } of results) {
+        const baked = fallback[key] ?? [];
+        const base = github?.length ? mergeCurated(github, baked) : baked;
+
+        if (openlist) {
+          openList[key] = openlist;
+          if (openlist.resolved) live = true;
+        }
+
+        byProject[key] = base.map((release) => ({
+          ...release,
+          assets: mergeOpenListAssets(release.assets, openlist),
+        }));
+
+        if (github?.length) live = true;
       }
 
-      if (live) setState({ byProject, live: true, syncedAt: Date.now() });
+      if (live || Object.keys(openList).length) {
+        setState({ byProject, openList, live, syncedAt: Date.now() });
+      }
     });
 
     return () => {
@@ -91,18 +130,25 @@ export function ReleasesProvider({ children }: { children: ReactNode }) {
   return <ReleasesContext.Provider value={state}>{children}</ReleasesContext.Provider>;
 }
 
-/** Releases for one project, plus whether they came from GitHub. */
-export function useProjectReleases(key: string) {
+/** Releases for one project, plus where they came from and its OpenList mirror. */
+export function useProjectReleases(key: string): ProjectReleases {
   const state = useContext(ReleasesContext);
   const baked = useMemo(
-    () => bakedReleases(DOWNLOAD_PROJECTS.find((project) => project.key === key) ?? DOWNLOAD_PROJECTS[0]),
+    () =>
+      bakedReleases(
+        DOWNLOAD_PROJECTS.find((project) => project.key === key) ?? DOWNLOAD_PROJECTS[0],
+      ),
     [key],
   );
 
+  const releases = state?.byProject[key] ?? baked;
+
   return {
-    releases: state?.byProject[key] ?? baked,
+    releases,
     live: state?.live ?? false,
+    source: state?.live ? 'live' : 'baked',
     syncedAt: state?.syncedAt ?? 0,
+    openList: state?.openList[key],
   };
 }
 

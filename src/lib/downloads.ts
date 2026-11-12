@@ -39,6 +39,12 @@ export interface DownloadProject {
   glow: string;
   repo: string;
   docs: string;
+  /**
+   * 文件夹名（区分大小写）——GitHub 仓库名 / OpenList 目录名都用它。
+   * OpenList 的路径是大小写敏感的，`/m/autoclicker` 会报 object not found，
+   * 所以这里显式给出 `AutoClicker`，而不是依赖 `key`。
+   */
+  folder: string;
   /** Newest first — `releases[0]` is treated as the latest build. */
   releases: DownloadRelease[];
 }
@@ -77,7 +83,104 @@ export const DOWNLOAD_PROJECTS: DownloadProject[] = [
     glow: 'bg-teal-500/20',
     repo: 'https://github.com/hn1318/AutoClicker',
     docs: '/docs/autoclicker',
+    folder: 'AutoClicker',
     releases: [
+      {
+        version: 'v1.0.2',
+        releasedAt: '2026-11-06',
+        channel: 'stable',
+        releaseUrl: 'https://github.com/hn1318/AutoClicker/releases/tag/v1.0.2',
+        assets: [
+          {
+            id: 'ac-102-exe',
+            file: 'AutoClicker_1.0.2_x64-setup.exe',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'EXE',
+            size: '2.47 MB',
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
+            sha256: 'f6f6b2208171d24a9061c4dad6f014f9bd1f2fb5e04d64d24a77795bcf68b176',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v1.0.2/AutoClicker_1.0.2_x64-setup.exe',
+          },
+          {
+            id: 'ac-102-msi',
+            file: 'AutoClicker_1.0.2_x64_en-US.msi',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'MSI',
+            size: '3.43 MB',
+            note: { en: 'MSI package — for silent / managed installs', zh: 'MSI 安装包，适合静默或批量部署' },
+            sha256: 'fc08f06dfdbc014ff99e660b84cf2b2b07b070864e7b6d45127a7137edab9bfb',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v1.0.2/AutoClicker_1.0.2_x64_en-US.msi',
+          },
+        ],
+      },
+      {
+        version: 'v1.0.0',
+        releasedAt: '2026-11-06',
+        channel: 'stable',
+        releaseUrl: 'https://github.com/hn1318/AutoClicker/releases/tag/v1.0.0',
+        assets: [
+          {
+            id: 'ac-100-exe',
+            file: 'AutoClicker_1.0.0_x64-setup.exe',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'EXE',
+            size: '2.47 MB',
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
+            sha256: '6de200f1a4ce187a601ba35d278f93d2ceb00781c4c02992e4fb14a0092b46b9',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v1.0.0/AutoClicker_1.0.0_x64-setup.exe',
+          },
+          {
+            id: 'ac-100-msi',
+            file: 'AutoClicker_1.0.0_x64_en-US.msi',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'MSI',
+            size: '3.43 MB',
+            note: { en: 'MSI package — for silent / managed installs', zh: 'MSI 安装包，适合静默或批量部署' },
+            sha256: 'ea3967115800e035182913f1c3c740408263e12b69af01e6e904913952718800',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v1.0.0/AutoClicker_1.0.0_x64_en-US.msi',
+          },
+        ],
+      },
+      {
+        version: 'v0.32.0',
+        releasedAt: '2026-11-05',
+        channel: 'stable',
+        releaseUrl: 'https://github.com/hn1318/AutoClicker/releases/tag/v0.32.0',
+        assets: [
+          {
+            id: 'ac-0320-exe',
+            file: 'AutoClicker_0.32.0_x64-setup.exe',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'EXE',
+            size: '1.72 MB',
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
+            sha256: '08fdcfb04b08a32b8a661a0632052b1a9d294dae0cebf89cbf648510b1f79879',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v0.32.0/AutoClicker_0.32.0_x64-setup.exe',
+          },
+          {
+            id: 'ac-0320-msi',
+            file: 'AutoClicker_0.32.0_x64_en-US.msi',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'MSI',
+            size: '2.48 MB',
+            note: { en: 'MSI package — for silent / managed installs', zh: 'MSI 安装包，适合静默或批量部署' },
+            sha256: '4d12a31160594ebafc3c9280244b938b9a675d7ff1f2010cf65bbcfe2171b73a',
+            github:
+              'https://github.com/hn1318/AutoClicker/releases/download/v0.32.0/AutoClicker_0.32.0_x64_en-US.msi',
+          },
+        ],
+      },
       {
         version: 'v0.3.0',
         releasedAt: '2026-11-05',
@@ -240,6 +343,11 @@ export interface AssetView {
   size: string;
   sha256?: string;
   github: string;
+  /**
+   * 备用直链（目前来自 OpenList）。与 `github` 指向同一份文件，
+   * 只走不同线路——下载源解析失败时保持 undefined。
+   */
+  mirror?: string;
   note: { en: string; zh: string };
 }
 

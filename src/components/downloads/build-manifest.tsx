@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Download, Terminal } from 'lucide-react';
+import { Check, Download, Server, Terminal } from 'lucide-react';
 import { useNewestBuild } from './releases-provider';
 import { getDictionary } from '@/i18n/dict';
 import type { Locale } from '@/i18n/config';
@@ -48,7 +48,7 @@ export function BuildManifest({ locale }: { locale: Locale }) {
     { label: d.released, value: release.releasedAt },
     { label: d.platform, value: platformSummary(release.assets) },
     { label: d.files, value: `${release.assets.length} · ${formatSummary(release.assets)}` },
-    { label: d.source, value: d.routeGitHub },
+    { label: d.source, value: asset.mirror ? `${d.routeGitHub} · ${d.routeOpenList}` : d.routeGitHub },
     {
       label: d.checksumLabel,
       value: asset.sha256 ? `${asset.sha256.slice(0, 12)}…` : '—',
@@ -89,6 +89,18 @@ export function BuildManifest({ locale }: { locale: Locale }) {
           <Download className="size-4" />
           {d.downloadNow}
         </a>
+        {asset.mirror && (
+          <a
+            href={asset.mirror}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={d.openListNote}
+            className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full border border-fd-border bg-fd-card px-5 py-2 text-xs font-medium text-fd-foreground transition-colors hover:bg-fd-accent"
+          >
+            <Server className="size-3.5" />
+            {d.routeOpenList}
+          </a>
+        )}
         <p
           className="mt-2 truncate text-center font-mono text-[10px] text-fd-muted-foreground"
           title={asset.file}

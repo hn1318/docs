@@ -16,6 +16,7 @@ import {
   type DownloadProject,
   type ReleaseView,
 } from '@/lib/downloads';
+import type { OpenListSource } from '@/lib/openlist';
 
 type Dict = ReturnType<typeof getDictionary>;
 
@@ -26,6 +27,7 @@ function AssetRow({
   recommended = false,
   locale,
   dict,
+  openList,
 }: {
   project: DownloadProject;
   release: ReleaseView;
@@ -33,8 +35,11 @@ function AssetRow({
   recommended?: boolean;
   locale: Locale;
   dict: Dict;
+  openList?: OpenListSource;
 }) {
   const d = dict.downloads;
+  // 行内自带的直链优先；否则回退到「整个产品目录」的 OpenList 入口。
+  const mirrorHrefForAsset = asset.mirror ?? openList?.pageUrl;
 
   return (
     <li className="flex flex-col gap-4 px-6 py-4 transition-colors hover:bg-fd-accent/30 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8">
@@ -79,6 +84,19 @@ function AssetRow({
           {d.download}
         </a>
 
+        {mirrorHrefForAsset && (
+          <a
+            href={mirrorHrefForAsset}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={asset.mirror ? d.openListNote : d.openListNoteFolder}
+            className="inline-flex items-center gap-1.5 rounded-full border border-fd-border bg-fd-card px-4 py-2 text-xs font-medium text-fd-foreground transition-colors hover:bg-fd-accent"
+          >
+            <Server className="size-3.5" />
+            {d.routeOpenList}
+          </a>
+        )}
+
         {MIRROR_ROUTES.map((route) => (
           <a
             key={route.id}
@@ -107,7 +125,7 @@ export function ReleaseCard({ projectKey, locale }: { projectKey: string; locale
   const prefix = locale === 'zh' ? '/zh' : '';
   const project = DOWNLOAD_PROJECTS.find((item) => item.key === projectKey);
 
-  const { releases, live } = useProjectReleases(projectKey);
+  const { releases, live, openList } = useProjectReleases(projectKey);
   const latest = releases[0];
   const older = releases.slice(1);
 
@@ -175,6 +193,7 @@ export function ReleaseCard({ projectKey, locale }: { projectKey: string; locale
             recommended={index === 0}
             locale={locale}
             dict={dict}
+            openList={openList}
           />
         ))}
       </ul>
@@ -221,6 +240,7 @@ export function ReleaseCard({ projectKey, locale }: { projectKey: string; locale
                       asset={asset}
                       locale={locale}
                       dict={dict}
+                      openList={openList}
                     />
                   ))}
                 </ul>
@@ -248,6 +268,17 @@ export function ReleaseCard({ projectKey, locale }: { projectKey: string; locale
             {d.readDocs}
             <ArrowRight className="size-3.5" />
           </Link>
+          {openList && (
+            <a
+              href={openList.pageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-fd-muted-foreground transition-colors hover:text-fd-foreground"
+            >
+              {d.openListAllFiles}
+              <Server className="size-3.5" />
+            </a>
+          )}
         </div>
         <a
           href={`${project.repo}/releases`}
