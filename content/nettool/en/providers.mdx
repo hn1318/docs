@@ -1,0 +1,61 @@
+---
+title: Third-party providers
+description: How to sign in to five FRP providers, import their tunnels, and read the logs
+---
+
+Once signed in you can read the account, list remote tunnels, then **preview → import as a local profile → start**.
+
+| Provider | Sign-in | Notes |
+| --- | --- | --- |
+| **ME Frp** | Access key / password (captcha) | Supports check-in for quota, disable/enable, force sign-out |
+| **OpenFrp** | Web sign-in (recommended) / legacy Authorization | Web sign-in polls the result automatically — no copy-paste |
+| **ChmlFrp** | Access token (`access_token`) | Copy from the panel's account centre |
+| **SakuraFrp** | Access key | Real-name verification required for API access |
+| **MSL Frp** | User token | Copy from the MSL account centre |
+
+## The general flow
+
+1. Pick a provider card at the top → sign in on the left (the tab says Web / Key / Password depending on the provider)
+2. Once signed in the left panel becomes an account card: group, tunnel quota, traffic, check-in state, bandwidth
+3. Select tunnels on the right → **Preview config** to see the generated `frpc.toml`, or **Import** / **Import and connect** directly
+4. Importing creates a new profile carrying a source badge and makes it the current profile
+
+<Callout type="warn" title="One node per batch">
+Tunnels imported in a single batch must belong to the **same node** (a provider-side requirement). Mixed nodes are rejected — import them in separate batches.
+</Callout>
+
+## Provider-specific notes
+
+**ME Frp**
+
+- The access key is your API token; copy it from the console's account settings.
+- Password sign-in needs human verification: **Open verification page** → complete it in the browser → copy the **Base64 code** shown → paste it back (the app decodes it).
+- A **Check in** button appears when you have not checked in; it also wants the code. Quota refreshes after a successful check-in.
+
+**OpenFrp**
+
+- The panel no longer offers "Copy Authorization" — use **web sign-in**: press the button, confirm in the browser, and the app polls every 5 seconds and signs in automatically. The waiting screen can be cancelled.
+- Credentials from old accounts (`OPENFRP...`) still work through **key sign-in**.
+
+**ChmlFrp**
+
+- The new API authenticates with `access_token`; the old `token` parameter is dead, and password sign-in is unsupported.
+- Their docs say `http://` but only HTTPS works — the correct base URL is built in.
+
+**SakuraFrp**
+
+- Use **Account info → Access key**; the entry is invisible until real-name verification is done.
+
+**MSL Frp**
+
+- Use the token from the account centre (`Authorization: Bearer`).
+
+Credentials are stored locally in `providers.json`; **Sign out** clears one provider at a time.
+
+## Logs
+
+- Level filter: `ALL / TRACE / DEBUG / INFO / WARN / ERROR`, with counts per level
+- Keyword search, auto-scroll toggle, clear, and export to `frpc-logs-<timestamp>.log`
+- Logs are also written **per day**: `{log directory}/frpc-YYYY-MM-DD.log`, defaulting to `{data directory}/logs`
+
+When a connection fails, start here: frpc's raw error (`connect to server error`, `port already used`) is always more specific than the dashboard hint.

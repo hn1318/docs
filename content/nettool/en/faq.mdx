@@ -1,0 +1,30 @@
+---
+title: Troubleshooting
+description: Look up a symptom, get the cause and the fix
+---
+
+| Symptom / message | Cause and fix |
+| --- | --- |
+| "frpc core is not installed" | Install it from **Core download**; or check the core path in settings |
+| "Server address (serverAddr) cannot be empty" | Fill in the frps address under **Profiles → Edit** |
+| "Tunnel "xxx" has no local port" | The local port must be greater than 0 |
+| "Tunnel "xxx" is http and needs a custom domain or subdomain" | HTTP(S) tunnels need a domain, and that domain must have a vhost on frps and resolve to the server |
+| Connects but nothing is reachable | Read frpc's output in **Logs**: `port already used` = remote port taken; `authentication failed` = token mismatch; `connect to server error` = address / port / firewall |
+| Changed a profile or tunnel, nothing happened | Disconnect and reconnect |
+| Provider says "not in the same node" | Import in batches, one node per batch |
+| OpenFrp web sign-in keeps waiting | The authorisation page was not confirmed or timed out; cancel and start again (OpenFrp controls the validity window) |
+| ME Frp password sign-in reports a bad code | Copy the **entire Base64 code** from the verification page after completing it — the app decodes it for you |
+| ChmlFrp says "missing / invalid login state" | Use the panel's `access_token`, not the old `token`, and copy it whole |
+| SakuraFrp sign-in fails | Real-name verification is required; the access key lives under **Account info** |
+| UDP tunnels show no rate | By design — UDP has no direction to measure, and the UI says "no byte statistics" |
+| Tray icon is missing | Expand the hidden-icons area near the clock, or confirm the process is alive in Task Manager |
+| Changing the storage location did nothing | Restart the app (the settings page says so too) |
+| Antivirus flags the app | It calls `taskkill` to stop frpc and writes a registry key for launch-at-login, which can trip heuristics — allow it |
+
+<Callout type="tip" title="When frpc's raw error is missing">
+Use **Logs → Export** and send the file to your provider or the developer — it is by far the fastest way to pinpoint a problem.
+</Callout>
+
+<Callout type="info" title="Doc version">
+This page tracks the code; it matches **v0.3.0**. If anything disagrees with reality, the app's own UI and the **Logs** page win.
+</Callout>

@@ -1,23 +1,55 @@
 ---
 title: NetTool
-description: FRP quick-connect tool — usage guide
+description: A desktop client that turns FRP tunnelling into configure → connect → observe
 ---
 
-Welcome to the NetTool documentation.
+NetTool is a graphical client for **FRP (fast reverse proxy)**. It does not tunnel anything itself — it handles the parts around it:
 
-NetTool is a quick-connect FRP tool for downloading, configuring and exposing tunnels in seconds.
+- downloading and managing the official `frpc` core
+- keeping multiple configurations (server, token, a set of tunnels) in a form-based UI
+- rendering a standard `frpc.toml` and starting / stopping the process
+- **real** per-tunnel upload and download rates plus cumulative traffic (measured, not simulated)
+- talking to five FRP providers' public APIs, so a remote tunnel can be imported and started in one click
 
-## First Tunnel
+Typical uses: exposing a local web service / SSH / RDP / NAS to the internet for a while, debugging WeChat callbacks, hosting a game for friends, and managing tunnels across several providers.
 
-1. Download NetTool and sign in
-2. Pick a provider (FRP-compatible) and add your server
-3. Create a tunnel — the config is generated for you
+<Callout type="warn" title="NetTool is not a server">
+You still need an frps endpoint — either your own, or an account with one of the [third-party providers](/docs/nettool/providers/).
+</Callout>
 
-## Use Cases
+Stack: Tauri 2 + Vue 3 + Rust. Primarily Windows (installer and portable builds; macOS and Linux can be compiled from source).
 
-- Expose a local dev server for testing
-- Remote access to a home server
-- Demo projects to clients without extra setup
+## Documentation
+
+<Cards>
+  <Card title="Installation & quick start" href="/docs/nettool/getting-started/" description="Installers, the frpc core, and a working tunnel in five minutes" />
+  <Card title="Interface & profiles" href="/docs/nettool/interface/" description="What each page does, the toolbar, multiple profiles" />
+  <Card title="Tunnels & traffic" href="/docs/nettool/tunnels/" description="Seven proxy types, the dashboard, the metering gateway" />
+  <Card title="Third-party providers" href="/docs/nettool/providers/" description="ME Frp / OpenFrp / ChmlFrp / SakuraFrp / MSL Frp" />
+  <Card title="Settings, tray & data" href="/docs/nettool/settings/" description="Appearance, storage, background running, data directory" />
+  <Card title="Troubleshooting" href="/docs/nettool/faq/" description="Look up a symptom, get the cause and the fix" />
+</Cards>
+
+## Build from source
+
+```bash
+pnpm install
+pnpm tauri dev        # development (Vite + Tauri)
+pnpm tauri build      # package an installer
+pnpm dev              # frontend only (Tauri APIs unavailable, styling work)
+cd src-tauri && cargo test --lib   # backend unit tests
+```
+
+Main modules:
+
+- Frontend: `src/` (Vue 3 + TS), pages in `src/views/`, shared components in `src/components/`
+- `runner.rs` — orchestrates the frpc process, metering gateway and sampling
+- `traffic.rs` — the local metering gateway
+- `config.rs` — config rendering and parsing (TOML / legacy INI)
+- `providers/` — per-provider adapters (`mod.rs` is the shared engine)
+- `settings.rs` — app settings, storage directory, launch at login
+
+Adding a provider: drop a submodule under `providers/` implementing `login_key / user / tunnels / profile`, then register it in `provider_metas()`.
 
 <Cards>
   <Card title="GitHub Repository" href="https://github.com/hn1318/netTool" />

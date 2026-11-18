@@ -1,0 +1,62 @@
+---
+title: Installation & quick start
+description: Install NetTool, grab the frpc core, and get a tunnel running in five minutes
+---
+
+## Install
+
+- **Installer** — run `NetTool_x.y.z_x64-setup.exe` and follow the wizard (you can pick the directory).
+- **Portable** — just run `nettool.exe`.
+
+<Callout type="info" title="Current release">
+v0.3.0 · app identifier `top.hn3.nettool`
+</Callout>
+
+### Upgrading from an older build
+
+The app identifier is `top.hn3.nettool`. If you used a build with the old identifier (`com.jlhan.nettool`), the first launch migrates your configuration, frpc core and provider credentials into the new directory automatically — nothing to copy by hand.
+
+### First launch
+
+It does three things: reads the local configuration (creating a default one if none exists), checks whether the `frpc` core is installed, and initialises the system tray.
+
+It cannot connect yet — install the core and fill in a server address first.
+
+## Install the frpc core
+
+Open the **Core download** page:
+
+| Area | What it does |
+| --- | --- |
+| Version list | Pulls real versions from GitHub Releases; when the network is blocked it says "switched to the built-in version list" and still lets you download |
+| Platform & arch | Auto-detects the current system (windows / linux / darwin / freebsd × amd64 / arm64 / 386 / arm); you can switch manually to download for another machine |
+| Download & install | Falls back across mirrors, shows percentage and bytes; unpacks into the data directory and verifies with `frpc -v` |
+| Open core directory | Jumps straight to the folder |
+| Installed core | Shows path, version, platform and size, with a **Verify** button |
+
+Core files live at `{data directory}/frp/frp_{version}_{platform}_{arch}/frpc(.exe)` with a `core.json` beside them.
+
+## A working tunnel in five minutes
+
+Say you want to expose the site on `127.0.0.1:8080`:
+
+1. **Install the core** — Core download → the newest version is preselected, platform and arch are detected → **Download and install**.
+2. **Add the server** — Configuration → **New profile**, fill in your frps details and save:
+   - Server address: your frps domain or IP
+   - Server port: `7000` by default
+   - Auth token: must match `auth.token` on the frps side (leave empty if unset)
+3. **Create the tunnel** — Tunnels → **New**:
+   - Name: `web`
+   - Type: `HTTP` (use `TCP` plus a remote port if the server only exposes a tcp port)
+   - Local IP / port: `127.0.0.1` / `8080`
+   - HTTP tunnels need a custom domain, already resolved to frps and covered by a vhost
+4. **Connect** — back to the Dashboard and press **Connect**. A green status light means success; failures are reported at the top of the page and frpc's raw output lands in **Logs**.
+5. **Verify** — open your domain (or `server-ip:remote-port`) in a browser; the live traffic curve on the dashboard should move.
+
+<Callout type="warn" title="Reconnect after changes">
+Anything you change in a profile or tunnel takes effect only after **reconnecting** — NetTool never restarts a running frpc behind your back.
+</Callout>
+
+<Callout type="tip" title="No server of your own?">
+Sign in to a third-party provider and import an existing remote tunnel in one click — see [Third-party providers](/docs/nettool/providers/).
+</Callout>

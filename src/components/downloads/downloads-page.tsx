@@ -150,7 +150,7 @@ export function DownloadsPage({ locale }: { locale: Locale }) {
           <div className="mx-auto max-w-screen-lg px-6 py-20">
             <SectionHeading tag={d.webTag} title={d.webTitle} description={d.webDescription} />
 
-            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {WEB_PROJECTS.map((project) => (
                 <a
                   key={project.key}

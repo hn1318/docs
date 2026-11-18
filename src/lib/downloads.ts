@@ -1,4 +1,4 @@
-import { MousePointerClick, type LucideIcon } from 'lucide-react';
+import { MousePointerClick, Network, type LucideIcon } from 'lucide-react';
 import type { Locale } from '@/i18n/config';
 
 export type Platform = 'windows' | 'macos' | 'linux';
@@ -279,6 +279,54 @@ export const DOWNLOAD_PROJECTS: DownloadProject[] = [
       },
     ],
   },
+  {
+    key: 'nettool',
+    name: 'NetTool',
+    tagline: {
+      en: 'GUI client for FRP tunnelling — configure, connect, observe',
+      zh: 'FRP 内网穿透的图形客户端，配置 / 连接 / 观测一条线',
+    },
+    icon: Network,
+    accent: 'from-violet-500 to-indigo-600',
+    glow: 'bg-violet-500/20',
+    repo: 'https://github.com/hn1318/netTool',
+    docs: '/docs/nettool',
+    folder: 'netTool',
+    releases: [
+      {
+        version: 'v0.3.0',
+        releasedAt: '2026-11-17',
+        channel: 'stable',
+        releaseUrl: 'https://github.com/hn1318/netTool/releases/tag/v0.3.0',
+        assets: [
+          {
+            id: 'nt-030-exe',
+            file: 'nettool_0.3.0_x64-setup.exe',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'EXE',
+            size: '2.82 MB',
+            note: { en: 'Setup wizard — creates Start menu and uninstall entries', zh: '安装向导，会创建开始菜单与卸载项' },
+            sha256: '4fdf3a82297b364b1b6750ff0eb59b3662c9224cea219958b26549de15f1ffdc',
+            github:
+              'https://github.com/hn1318/netTool/releases/download/v0.3.0/nettool_0.3.0_x64-setup.exe',
+          },
+          {
+            id: 'nt-030-msi',
+            file: 'nettool_0.3.0_x64_en-US.msi',
+            platform: 'windows',
+            arch: 'x64',
+            format: 'MSI',
+            size: '3.77 MB',
+            note: { en: 'MSI package — for silent / managed installs', zh: 'MSI 安装包，适合静默或批量部署' },
+            sha256: '752494748c9ce16e78413e7c4b501773b78f329c90465ec29c2d750326324',
+            github:
+              'https://github.com/hn1318/netTool/releases/download/v0.3.0/nettool_0.3.0_x64_en-US.msi',
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 /** Products that ship as a website or a plain repository — nothing to install. */
@@ -289,13 +337,6 @@ export const WEB_PROJECTS = [
     href: 'https://weather.hn3.top',
     docs: '/docs/hweather',
     tagline: { en: 'Weather & disaster alerts, in the browser', zh: '天气与灾害预警，浏览器直接用' },
-  },
-  {
-    key: 'nettool',
-    name: 'NetTool',
-    href: 'https://github.com/hn1318/netTool',
-    docs: '/docs/nettool',
-    tagline: { en: 'FRP quick-connect tool, sourced on GitHub', zh: 'FRP 快速连接工具，源码在 GitHub' },
   },
   {
     key: 'campustao',

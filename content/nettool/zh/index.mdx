@@ -1,23 +1,55 @@
 ---
 title: NetTool 内网穿透
-description: FRP 快速连接工具 — 使用指南
+description: 把 FRP 内网穿透的「配置 → 启动 → 观测」串成一条直线的桌面工具
 ---
 
-欢迎使用 NetTool 文档。
+NetTool 是 **FRP（fast reverse proxy）** 的图形客户端。它不做穿透本身，而是负责：
 
-NetTool 是一款 FRP 快速连接工具，几秒钟即可下载、配置并暴露隧道。
+- 下载并托管官方 `frpc` 核心
+- 用可视化表单维护多套配置（服务器、令牌、一组隧道）
+- 生成标准 `frpc.toml` 并拉起 / 停止进程
+- **真实统计**每条隧道的上下行速率与累计流量（不是模拟数据）
+- 直连 5 家 FRP 服务商的开放 API，登录后一键把远端隧道导入本地并启动
 
-## 建立第一条隧道
+适合：临时把本机 Web 服务 / SSH / RDP / NAS 暴露到公网、调试微信回调、和朋友联机开服、管理多个服务商的隧道。
 
-1. 下载 NetTool 并登录
-2. 选择兼容 FRP 的提供商并添加服务器
-3. 创建隧道 — 配置自动生成
+<Callout type="warn" title="NetTool 不提供服务器">
+你需要一个 frps 服务端（自建），或直接使用 [第三方服务](/zh/docs/nettool/providers/) 里的服务商账号。
+</Callout>
 
-## 使用场景
+技术栈：Tauri 2 + Vue 3 + Rust，主要面向 Windows（安装包 / 免安装两种形式；macOS、Linux 可自行编译）。
 
-- 暴露本地开发服务器用于测试
-- 远程访问家庭服务器
-- 无需额外配置即可向客户演示项目
+## 文档索引
+
+<Cards>
+  <Card title="安装与快速上手" href="/zh/docs/nettool/getting-started/" description="安装包、核心下载、五分钟跑通一条隧道" />
+  <Card title="界面与配置管理" href="/zh/docs/nettool/interface/" description="各页面职责、顶部工具条、多套配置" />
+  <Card title="隧道与流量统计" href="/zh/docs/nettool/tunnels/" description="7 种代理类型、控制面板、计量网关" />
+  <Card title="第三方服务" href="/zh/docs/nettool/providers/" description="ME Frp / OpenFrp / ChmlFrp / SakuraFrp / MSL Frp" />
+  <Card title="设置、托盘与数据" href="/zh/docs/nettool/settings/" description="外观、存储位置、后台运行、数据目录" />
+  <Card title="常见问题与排错" href="/zh/docs/nettool/faq/" description="按现象查原因与处理方式" />
+</Cards>
+
+## 从源码构建
+
+```bash
+pnpm install
+pnpm tauri dev        # 开发模式（Vite + Tauri）
+pnpm tauri build      # 打包安装包
+pnpm dev              # 仅前端（Tauri API 不可用，仅调样式）
+cd src-tauri && cargo test --lib   # 后端单元测试
+```
+
+主要模块：
+
+- 前端：`src/`（Vue 3 + TS），页面在 `src/views/`，通用组件在 `src/components/`
+- `runner.rs` 编排 frpc 进程、计量网关与采样
+- `traffic.rs` 本地计量网关
+- `config.rs` 配置渲染与解析（TOML / 旧版 INI）
+- `providers/` 各服务商适配（`mod.rs` 为通用引擎）
+- `settings.rs` 应用设置、存储目录、开机自启
+
+新增服务商：在 `providers/` 下加一个子模块，实现 `login_key / user / tunnels / profile`，再在 `provider_metas()` 注册即可。
 
 <Cards>
   <Card title="GitHub 仓库" href="https://github.com/hn1318/netTool" />

@@ -1,0 +1,72 @@
+---
+title: Settings, tray & data
+description: Appearance, storage location, launch at login, close behaviour, and what lives in the data directory
+---
+
+## Settings
+
+Four sections.
+
+### Appearance
+
+- Theme: dark / light
+- Background image: JPG / PNG / WebP, compressed and stored locally; fit mode (cover / contain / stretch) and overlay opacity 0–80%
+- Corner radius 0–24px, frosted-glass toggle, blur strength 0–60px
+- **Restore defaults** puts everything back
+
+### Storage location
+
+- **Data directory** and **log directory** are both configurable (default `%APPDATA%\top.hn3.nettool`)
+- Tick **Migrate existing files** and press **Apply storage location** to copy the current config, core and credentials across
+- Takes effect **after a restart** (so data cannot split mid-run); **Open data directory** jumps straight there
+
+### Startup & close
+
+- **Launch at login** (via the Windows registry key `HKCU\...\Run`)
+- **When closing the window**: ask every time / run in background / quit immediately — see the next section
+
+<Callout type="info" title="The two switches move together">
+"Launch at login" and "minimise to tray" under *Account centre → Preferences* are the same settings as here; changing either produces the same result (minimise to tray is the "run in background" close behaviour).
+</Callout>
+
+### Runtime
+
+Shows the `frpc` core path, version, platform and app identifier, with **Open core directory**.
+
+Server address, token and other connection parameters are not on this page — edit them in **Profiles**.
+
+## Background running and the tray
+
+Closing the window asks first:
+
+| Option | Effect |
+| --- | --- |
+| **Run in background** | The window hides to the tray; frpc and your tunnels **keep running** |
+| **Quit** | Ends the process, stopping frpc and the metering gateway |
+| **Cancel** | Nothing happens |
+
+Tick **Remember my choice** to stop the prompt; change it later under *Settings → Startup & close*.
+
+Tray behaviour:
+
+- **Left click** — show and focus the main window
+- **Right-click menu** — *Show window* / *Quit* (quitting stops the tunnels first, then exits)
+
+If the tray icon is missing, click the `^` arrow near the clock to expand hidden icons — Windows 11 folds new icons by default.
+
+## Data directory
+
+Default `%APPDATA%\top.hn3.nettool` (changeable in settings):
+
+```text
+top.hn3.nettool/
+├── settings.json        # app settings: close behaviour, custom data/log directories
+├── profiles.json        # all profiles (current one + tunnel lists)
+├── providers.json       # third-party provider credentials
+├── core.json            # metadata of the installed frpc core
+├── frp/                 # the downloaded frpc core
+├── profiles/{profile-id}/frpc.toml   # runtime config generated per connection
+└── logs/frpc-YYYY-MM-DD.log          # daily logs
+```
+
+Backup / migrate: copy the whole directory. Moving to a new machine is the same copy into the same place — or point the setting at wherever you put it — and both configuration and sign-in state come back.

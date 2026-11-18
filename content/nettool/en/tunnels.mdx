@@ -1,0 +1,54 @@
+---
+title: Tunnels & traffic
+description: The seven proxy types, the dashboard, and where those "real" traffic numbers come from
+---
+
+## Tunnels
+
+Seven proxy types are supported; the form shows the fields that matter for the selected type:
+
+| Type | Required | Notes |
+| --- | --- | --- |
+| `tcp` / `udp` | Remote port | The common case; udp suits multiplayer games |
+| `http` / `https` | Custom domain (comma separated) or subdomain | Uses frps vhost, no remote port |
+| `stcp` / `xtcp` | Secret key | Peer-to-peer encrypted tunnel; the visitor needs the same key |
+| `tcpmux` | Custom domain | HTTP multiplexing over a single port |
+
+Shared fields: local IP, local port, encryption (`useEncryption`), compression (`useCompression`) and bandwidth limit (`bandwidthLimit`).
+
+Other operations:
+
+- **Import** — TOML, legacy INI or JSON, several tunnels at once.
+- **Copy TOML** — render one tunnel as a TOML fragment.
+- **Enable toggle** — disabled tunnels are left out of `frpc.toml`; reconnect to apply.
+- **Access URL** — HTTP(S) tunnels show `http(s)://domain` live in the editor, ready to copy.
+- The list flags tunnels with no access domain — an HTTP tunnel without one fails at startup.
+
+## Dashboard
+
+### What is on it
+
+- Top: current profile, **Connect / Disconnect**, **Reset statistics**, connection state
+- Four metric cards: down rate (with total), up rate (with total), connections (with tunnel count), session duration
+- **Live traffic** chart: KB/s, roughly the last 60 seconds
+- **Tunnel detail** table: tunnel / type / local → remote / down / up / connections / status
+- **Runtime info**: frpc PID, generated config path, local admin API port, number of active metering gateways
+- The status column comes from frpc's `/api/status`: running / awaiting report / error with reason
+
+### How traffic is measured
+
+NetTool inserts a **local metering gateway** between frpc and your service:
+
+```text
+internet → frps → frpc → [NetTool gateway 127.0.0.1:random] → your local service
+                            ↑ counted byte by byte
+```
+
+- On start the tunnel's `localPort` is pointed at the gateway port, and the gateway forwards to the real `localIP:localPort`
+- Bytes read back from frpc count as **down**, bytes written towards frpc count as **up**
+- Rates settle once per second; totals accumulate for the current run and reset with **Reset statistics**
+
+Two known limits:
+
+- **UDP tunnels** have no direction to distinguish — the UI marks them "no byte statistics" and shows 0
+- The gateway is one extra hop; latency added is tiny (loopback), but your local service must accept connections from `127.0.0.1`

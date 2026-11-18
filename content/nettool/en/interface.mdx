@@ -1,0 +1,39 @@
+---
+title: Interface & profiles
+description: What each page is for, and how multiple profiles are switched, imported and exported
+---
+
+The navigation sits on the left and can be collapsed; a permanent toolbar runs along the top.
+
+## Pages
+
+| Page | Purpose |
+| --- | --- |
+| **Dashboard** | Connect / disconnect, live traffic, per-tunnel rate and status |
+| **Tunnels** | Add, edit, import, enable and disable tunnels in the current profile |
+| **Profiles** | Switch, duplicate and import/export multiple profiles |
+| **Providers** | Sign in to ME Frp / OpenFrp / ChmlFrp / SakuraFrp / MSL Frp and import tunnels |
+| **Core download** | Download and verify the `frpc` core |
+| **Settings** | Appearance, storage location, launch at login, close behaviour |
+| **Logs** | Live frpc output with filtering, search and export |
+| **Account centre** | Local profile and preferences (never uploaded anywhere) |
+| **About** | Version and open-source licences |
+
+Toolbar, left to right: current page title + current profile name, status light (green = connected), **Connect / Disconnect**, **Refresh**, **Logs**, **Config directory**, **Light / dark toggle**.
+
+## Profiles
+
+A profile is one server plus its token and one set of tunnels — use them to keep different servers or different providers apart.
+
+- **New profile** — name, address, port, user, token, transport (tcp/kcp/websocket), TLS, log level.
+- **Edit / duplicate / delete** — deletion asks twice, and takes the tunnels in that profile with it (at least one profile always remains).
+- **Set as current** — the dashboard and tunnel pages always operate on the current profile; its name is shown in the toolbar.
+- **Export** — render the profile into an `frpc.toml` and download it.
+- **Import TOML** — paste a complete `frpc.toml` (including `[[proxies]]`) or a legacy INI (`[common]` + `[tunnel name]`); NetTool parses the server settings and tunnels into a new profile.
+- **Bulk export / delete** — select several profiles and act on them together.
+
+Profiles that came from a provider carry a source badge (e.g. `ME Frp`) so they are easy to spot.
+
+<Callout type="info" title="Switching profiles leaves the connection alone">
+Switching only changes what you are editing. It never touches a running connection — go back to the dashboard and reconnect if you want the new profile to take effect.
+</Callout>
